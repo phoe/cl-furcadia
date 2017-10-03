@@ -11,6 +11,4 @@
   :depends-on (#:alexandria
                #:phoe-toolbox)
   :components ((:file "package")
-               (:file "utils")
-               (:file "constants")
-               (:file "remap/remap")))
+               (:file "utils")))

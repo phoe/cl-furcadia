@@ -3,7 +3,7 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; remap.lisp
 
-(in-package #:cl-furcadia)
+(in-package #:cl-furcadia/remap)
 
 (defun color-code-gradient (type code)
   "Given a color type and a color code, returns the respective gradient."
@@ -48,8 +48,9 @@ image data with all eligible pixels remapped."
     (assert (= b 0))
     (if (= g 255)
         (list 255 0 0 0)
-        (let* ((type (gethash g *remap-color-values*))
-               (gradient (first (gethash type gradients)))
-               (offset (* r 4))
-               (color (subseq gradient offset (+ offset 4))))
-          (list a (aref color 0) (aref color 1) (aref color 2))))))
+        (let ((type (gethash g *color-values*)))
+          (unless type (error "No remap type ~D found." g))
+          (let* ((gradient (first (gethash type gradients)))
+                 (offset (* r 4))
+                 (color (subseq gradient offset (+ offset 4))))
+            (list a (aref color 0) (aref color 1) (aref color 2)))))))
