@@ -6,6 +6,5 @@
 (defpackage #:cl-furcadia/clos
   (:use
    #:cl
-   ;;#:alexandria
-   ;;#:phoe-toolbox
-   ))
+   #:alexandria
+   #:phoe-toolbox))

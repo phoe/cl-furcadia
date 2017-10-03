@@ -7,7 +7,8 @@
   :description "Class definitions for objects used in Furcadia."
   :author "Michał \"phoe\" Herda <phoe@openmailbox.org>"
   :license "BSD 3-clause"
-  :depends-on ()
+  :depends-on (#:alexandria
+               #:phoe-toolbox)
   :serial t
   :components ((:file "package")
                (:file "classes")))
