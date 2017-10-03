@@ -7,10 +7,10 @@
 
 ;; TODO compute all sane default values and their types and store them here
 (defclass furre ()
-  ((%name :accessor name
+  ((%name :reader name
           :initarg :name)
-   %(shortname :accessor shortname
-               :initform :shortname) ;; TODO compute this based on name
+   (%shortname :reader shortname
+               :initarg :shortname)
    (%uid :accessor uid
          :initarg uid)
    (%description :accessor description
@@ -63,8 +63,25 @@
     `(unless (slot-boundp ,object ',slot-name)
        (error "Must provide ~A." ',accessor))))
 
+(defparameter *shortname-mismatch*
+  "The provided shortname ~S does not match the provided name ~
+~S. (Should be ~S.)")
+
 (define-constructor (furre)
-  (check-boundp furre name))
+  ;; Name must be provided.
+  (check-boundp furre name)
+  ;; Shortname must be empty or suiting the name.
+  (let* ((name (name furre))
+         (shortname (name-shortname name)))
+    (if (slot-boundp furre '%shortname)
+        (restart-case (unless (string= (shortname furre) shortname)
+                        (error *shortname-mismatch*
+                               (shortname furre) name shortname))
+          (continue ()
+            :report "Use the computed shortname."
+            (setf (slot-value furre '%shortname) shortname)))
+        (setf (slot-value furre '%shortname) shortname)))
+  )
 
 (define-print (furre stream)
   (format stream "~S" (name furre)))

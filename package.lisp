@@ -11,4 +11,5 @@
   (:export
    ;; utility functions
    #:from-220
-   #:to-220))
+   #:to-220
+   #:name-shortname))

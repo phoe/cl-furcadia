@@ -7,4 +7,5 @@
   (:use
    #:cl
    #:alexandria
-   #:phoe-toolbox))
+   #:phoe-toolbox
+   #:cl-furcadia))
