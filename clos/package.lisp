@@ -3,12 +3,9 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; package.lisp
 
-(defpackage #:cl-furcadia
+(defpackage #:cl-furcadia/clos
   (:use
    #:cl
-   #:alexandria
-   #:phoe-toolbox)
-  (:export
-   ;; utility functions
-   #:from-220
-   #:to-220))
+   ;;#:alexandria
+   ;;#:phoe-toolbox
+   ))

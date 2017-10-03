@@ -1,14 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; CL-FURCADIA
 ;;;; © Michał "phoe" Herda 2017
-;;;; cl-furcadia.remap.asd
+;;;; cl-furcadia.clos.asd
 
-(asdf:defsystem #:cl-furcadia.remap
-  :description "Utilities for remapping Furcadia images."
+(asdf:defsystem #:cl-furcadia.clos
+  :description "Class definitions for objects used in Furcadia."
   :author "Michał \"phoe\" Herda <phoe@openmailbox.org>"
   :license "BSD 3-clause"
-  :depends-on (#:cl-furcadia)
+  :depends-on ()
   :serial t
   :components ((:file "package")
-               (:file "constants")
-               (:file "remap")))
+               (:file "classes")))
