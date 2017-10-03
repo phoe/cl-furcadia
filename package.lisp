@@ -27,3 +27,10 @@
    #:*color-values*
    #:*color-code-indices*
    #:*genders*))
+
+(defpackage #:cl-furcadia/clos
+  (:use
+   #:cl
+   ;;#:alexandria
+   ;;#:phoe-toolbox
+   ))

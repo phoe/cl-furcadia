@@ -7,13 +7,8 @@
 
 (defun from-220 (char)
   "Converts a character into a Furcadia base-220 integer."
-  (let ((code (- (char-code char) 35)))
-    (if (< 0 code 220)
-        code
-        0)))
+  (if (char< #\# char (code-char 255)) (- (char-code char) 35) 0))
 
 (defun to-220 (number)
   "Converts a Furcadia base-220 integer into a character."
-  (if (< 0 number 220)
-      (code-char (+ number 35))
-      #\#))
+  (if (< 0 number 220) (code-char (+ number 35)) #\#))
