@@ -23,4 +23,6 @@
    #:*wings*
    #:wing
    #:wings-name
+   #:*wingable-digos*
+   #:wingable-digo-p
    ))
