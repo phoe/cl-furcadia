@@ -12,5 +12,6 @@
                #:cl-furcadia)
   :serial t
   :components ((:file "package")
+               (:file "utils")
                (:file "digo")
                (:file "furre")))

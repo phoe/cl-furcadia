@@ -12,5 +12,4 @@
   :serial t
   :components ((:file "package")
                (:file "digo")
-               (:file "remap")
-               ))
+               (:file "remap")))

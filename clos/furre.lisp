@@ -58,18 +58,13 @@
    (%costumes :accessor costumes
               :initarg :costumes)))
 
-(defmacro check-boundp (object accessor)
-  (let ((slot-name (symbolicate #\% accessor)))
-    `(unless (slot-boundp ,object ',slot-name)
-       (error "Must provide ~A." ',accessor))))
-
 (defparameter *shortname-mismatch*
   "The provided shortname ~S does not match the provided name ~
 ~S. (Should be ~S.)")
 
 (define-constructor (furre)
   ;; NAME: must be provided.
-  (check-boundp furre name)
+  (check-boundp furre %name)
   ;; SHORTNAME: must be empty or suiting the name.
   (let* ((name (name furre))
          (shortname (name-shortname name)))

@@ -25,10 +25,10 @@
 
 (define-constructor (digo)
   ;; Index: must be provided and an unsigned-byte.
-  (check-boundp digo index)
+  (check-boundp digo %index)
   (assert (typep (index digo) 'unsigned-byte))
   ;; Name: must be provided and a string.
-  (check-boundp digo name)
+  (check-boundp digo %name)
   (assert (typep (name digo) 'string))
   ;; Version: must be an unsigned-byte.
   (when (slot-boundp digo '%version)
