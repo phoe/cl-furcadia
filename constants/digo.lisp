@@ -5,6 +5,7 @@
 
 (in-package #:cl-furcadia/constants)
 
+;;; TODO move all data files to CL-FURCADIA/CONSTANTS/DATA
 (defvar *digos*
   (read-data-file :cl-furcadia.constants "data/digos.lisp")
   "Hash-table containing digo data. The keys are unsigned-bytes and the values
