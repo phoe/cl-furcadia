@@ -24,7 +24,7 @@ are instances of CL-FURCADIA/CLOS:DIGO class.")
   "Identifiers for digos which are capable of displaying wings.")
 
 (defun wings-name (wings)
-  "Given "
+  "Given a wing type, returns it proper name in form of a string."
   (check-type wings (or null keyword))
   (if (null wings)
       "No Wings"
