@@ -21,3 +21,9 @@
         when new-char
           collect new-char into result
         finally (return (coerce result 'string))))
+
+(defun read-data-file (system pathname)
+  "Reads the data file from the provided pathname. The pathname should be
+a system relative pathname."
+  (let ((full-pathname (asdf:system-relative-pathname system pathname)))
+    (with-input-from-file (stream full-pathname) (read stream))))

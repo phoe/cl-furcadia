@@ -7,8 +7,8 @@
   :description "Utilities for remapping Furcadia images."
   :author "Michał \"phoe\" Herda <phoe@openmailbox.org>"
   :license "BSD 3-clause"
-  :depends-on (#:cl-furcadia)
+  :depends-on (#:cl-furcadia
+               #:cl-furcadia.constants)
   :serial t
   :components ((:file "package")
-               (:file "constants")
                (:file "remap")))

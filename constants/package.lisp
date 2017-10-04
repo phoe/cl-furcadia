@@ -3,19 +3,20 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; package.lisp
 
-(defpackage #:cl-furcadia/remap
+(defpackage #:cl-furcadia/constants
   (:use
    #:cl
-   #:alexandria
    #:cl-furcadia
-   #:cl-furcadia/constants)
+   #:cl-furcadia/clos)
   (:export
-   ;; types
+   ;; REMAP
    #:color
-   ;; variables
    #:*color-types*
    #:*gradients*
    #:*color-names*
    #:*color-values*
    #:*color-code-indices*
-   #:*genders*))
+   #:*genders*
+   ;; DIGOS
+   #:*digos*
+   ))

@@ -68,9 +68,9 @@
 ~S. (Should be ~S.)")
 
 (define-constructor (furre)
-  ;; Name must be provided.
+  ;; NAME: must be provided.
   (check-boundp furre name)
-  ;; Shortname must be empty or suiting the name.
+  ;; SHORTNAME: must be empty or suiting the name.
   (let* ((name (name furre))
          (shortname (name-shortname name)))
     (if (slot-boundp furre '%shortname)
@@ -81,7 +81,9 @@
             :report "Use the computed shortname."
             (setf (slot-value furre '%shortname) shortname)))
         (setf (slot-value furre '%shortname) shortname)))
-  )
+  ;; UID: if provided, must be an integer.
+  (when (slot-boundp furre '%uid)
+    (check-type (uid furre) unsigned-byte)))
 
-(define-print (furre stream)
+(define-readable-print (furre stream :identity nil)
   (format stream "~S" (name furre)))
