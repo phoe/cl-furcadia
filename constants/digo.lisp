@@ -19,6 +19,10 @@ are instances of CL-FURCADIA/CLOS:DIGO class.")
   "A symbol denoting a Furcadia wing type."
   '#.`(member ,@*wings*))
 
+(defvar *wingable-digos*
+  '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 138 149 159 188 228 234 257)
+  "Identifiers for digos which are capable of displaying wings.")
+
 (defun wings-name (wings)
   "Given "
   (check-type wings (or null keyword))
@@ -26,10 +30,6 @@ are instances of CL-FURCADIA/CLOS:DIGO class.")
       "No Wings"
       (let* ((name (string-capitalize (string wings))))
         (cat name " Wings"))))
-
-(defvar *wingable-digos*
-  '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 138 149 159 188 228 234 257)
-  "Identifiers for digos which are capable of displaying wings.")
 
 (defgeneric wingable-digo-p (object)
   (:documentation #.(format nil "Returns true if the provided digo is ~
