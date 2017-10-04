@@ -6,6 +6,7 @@
 (defpackage #:cl-furcadia/constants
   (:use
    #:cl
+   #:phoe-toolbox
    #:cl-furcadia
    #:cl-furcadia/clos)
   (:export
@@ -19,4 +20,7 @@
    #:*genders*
    ;; DIGOS
    #:*digos*
+   #:*wings*
+   #:wing
+   #:wings-name
    ))
