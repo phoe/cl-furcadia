@@ -26,4 +26,5 @@
   "Reads the data file from the provided pathname. The pathname should be
 a system relative pathname."
   (let ((full-pathname (asdf:system-relative-pathname system pathname)))
-    (with-input-from-file (stream full-pathname) (read stream))))
+    (with-input-from-file (stream full-pathname)
+      (with-standard-io-syntax (read stream)))))

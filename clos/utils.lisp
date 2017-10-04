@@ -7,6 +7,7 @@
 
 (defmacro check-boundp (object slot-name)
   "Asserts that the provided slot is bound."
-  (let ((name (subseq (string slot-name) 1)))
+  (let* ((name (string slot-name))
+         (result (if (char= (aref name 0) #\%) (subseq name 1) name)))
     `(unless (slot-boundp ,object ',slot-name)
-       (error "Must provide ~A." ,name))))
+       (error "Must provide ~A." ,result))))
