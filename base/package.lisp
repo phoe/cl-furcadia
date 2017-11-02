@@ -3,14 +3,14 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; package.lisp
 
-(defpackage #:cl-furcadia/remap
+(defpackage #:cl-furcadia/base
   (:use
    #:cl
    #:alexandria
-   #:cl-furcadia/base
-   #:cl-furcadia/constants)
+   #:phoe-toolbox)
   (:export
-   ;; functions
-   #:color-code-gradient
-   #:all-gradients
-   #:remap))
+   ;; utility functions
+   #:from-220
+   #:to-220
+   #:name-shortname
+   #:read-data-file))

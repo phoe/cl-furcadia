@@ -7,8 +7,7 @@
   (:use
    #:cl
    #:phoe-toolbox
-   #:cl-furcadia
-   #:cl-furcadia/clos)
+   #:cl-furcadia/base)
   (:export
    ;; REMAP
    #:color
@@ -17,12 +16,4 @@
    #:*color-names*
    #:*color-values*
    #:*color-code-indices*
-   #:*genders*
-   ;; DIGOS
-   #:*digos*
-   #:*wings*
-   #:wing
-   #:wings-name
-   #:*wingable-digos*
-   #:wingable-digo-p
-   ))
+   #:*genders*))

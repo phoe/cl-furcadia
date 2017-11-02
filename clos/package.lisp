@@ -8,7 +8,7 @@
    #:cl
    #:alexandria
    #:phoe-toolbox
-   #:cl-furcadia)
+   #:cl-furcadia/base)
   (:export
    ;; Furre class and accessors
    #:furre

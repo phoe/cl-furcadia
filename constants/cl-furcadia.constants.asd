@@ -8,9 +8,7 @@
   :author "Michał \"phoe\" Herda <phoe@openmailbox.org>"
   :license "BSD 3-clause"
   :depends-on (#:phoe-toolbox
-               #:cl-furcadia
-               #:cl-furcadia.clos)
+               #:cl-furcadia.base)
   :serial t
   :components ((:file "package")
-               (:file "digo")
                (:file "remap")))

@@ -9,7 +9,7 @@
   :license "BSD 3-clause"
   :depends-on (#:alexandria
                #:phoe-toolbox
-               #:cl-furcadia)
+               #:cl-furcadia.base)
   :serial t
   :components ((:file "package")
                (:file "utils")

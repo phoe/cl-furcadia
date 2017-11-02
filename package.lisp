@@ -3,14 +3,19 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; package.lisp
 
-(defpackage #:cl-furcadia
-  (:use
-   #:cl
-   #:alexandria
-   #:phoe-toolbox)
-  (:export
-   ;; utility functions
-   #:from-220
-   #:to-220
-   #:name-shortname
-   #:read-data-file))
+(uiop:define-package #:cl-furcadia
+    (:use
+     #:cl
+     #:cl-furcadia/base
+     #:cl-furcadia/date-parser
+     #:cl-furcadia/constants
+     #:cl-furcadia/clos
+     #:cl-furcadia/constants+clos
+     #:cl-furcadia/remap)
+  (:reexport
+   #:cl-furcadia/base
+   #:cl-furcadia/date-parser
+   #:cl-furcadia/constants
+   #:cl-furcadia/clos
+   #:cl-furcadia/constants+clos
+   #:cl-furcadia/remap))

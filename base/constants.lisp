@@ -3,7 +3,7 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; constants.lisp
 
-(in-package #:cl-furcadia)
+(in-package #:cl-furcadia/base)
 
 (defvar *shortname-char-table*
   #(nil  nil  nil  nil  nil  nil  nil  nil

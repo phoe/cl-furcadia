@@ -3,7 +3,7 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; utils.lisp
 
-(in-package #:cl-furcadia)
+(in-package #:cl-furcadia/base)
 
 (defun from-220 (char)
   "Converts a character into a Furcadia base-220 integer."
