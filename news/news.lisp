@@ -19,8 +19,11 @@
    #:*news-sources*
    #:*example-news-sources*
    #:get-all-news
-   #:http-download
-   #:http-download-all))
+   ;;#:http-download-all ;; deprecated, TBD in Raptor Launcher
+   ;; Reexport of news symbols from CL-FURCADIA/CLOS
+   #:news
+   #:title #:contents #:category #:date #:datestring #:url #:image-url
+   #:image-filename))
 
 (in-package #:cl-furcadia/news)
 
@@ -30,17 +33,9 @@
   "An alist of all news sources, where keys are keywords and values are URLs.")
 
 (defvar *example-news-sources*
-  '("http://news.furcadia.com/current" ;; Furcadia
-    "http://raptorlauncher.github.io/news.txt" ;; Raptor Launcher
-    )
+  '("http://news.furcadia.com/current"
+    "http://raptorlauncher.github.io/news.txt")
   "Example news sources known to be usable at the time of writing this code.")
-
-(defun http-get-news (url)
-  "Retrieves the news from the provided URL and returns it as a string."
-  (let ((response (http-request url :external-format-out :utf-8)))
-    (etypecase response
-      (string response)
-      ((vector (unsigned-byte 8)) (flex:octets-to-string response)))))
 
 (defun get-all-news (urls &optional last-modified)
   "Fetches all news from the provided URLs and returns them sorted from newest
@@ -54,16 +49,12 @@ sources and, if supplied, the LAST-MODIFIED argument."
     (values (sort (apply #'nconc news) #'timestamp> :key #'date)
             (extremum dates #'string>))))
 
-(defun http-download (url pathname)
-  ;; TODO logging
-  (download url pathname :quiet t))
-
-(defun http-download-all (urls directory)
-  (let* ((filenames (mapcar #'url-filename urls))
-         (pathnames (mapcar (rcurry #'merge-pathnames directory) filenames)))
-    (mapc (rcurry #'http-download) urls pathnames)))
-
-;;; News preparation
+(defun http-get-news (url)
+  "Retrieves the news from the provided URL and returns it as a string."
+  (let ((response (http-request url :external-format-out :utf-8)))
+    (etypecase response
+      (string response)
+      ((vector (unsigned-byte 8)) (flex:octets-to-string response)))))
 
 (defun prepare-news (string)
   "Provided a string containing the retrieved news, returns a list of news
@@ -90,10 +81,12 @@ objects, sorted from newest."
                              url image-url image-filename)))
             (make-instance 'news :from from)))))))
 
-(defun url-filename (url)
-  "Given a URL, returns everything after its last slash."
-  (assert (stringp url))
-  (let* ((position (position #\/ url :from-end t)))
-    (if position
-        (subseq url (1+ position))
-        "")))
+;; TODO implement this in Raptor Launcher instead, since it'll have both
+;; drakma and lparallel in its dependencies
+;; (defun http-download-all (urls directory)
+;;   (flet ((http-download (url pathname)
+;;            ;; TODO logging here
+;;            (download url pathname :quiet t)))
+;;     (let* ((filenames (mapcar #'url-filename urls))
+;;            (pathnames (mapcar (rcurry #'merge-pathnames directory) filenames)))
+;;       (mapc (rcurry #'http-download) urls pathnames))))
