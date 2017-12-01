@@ -14,4 +14,5 @@
                #:split-sequence
                #:drakma)
   :serial t
-  :components ((:file "news")))
+  :components ((:file "package")
+               (:file "news")))

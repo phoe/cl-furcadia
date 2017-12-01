@@ -3,46 +3,27 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; news.lisp
 
-(defpackage #:cl-furcadia/news
-  (:use
-   #:cl
-   #:alexandria
-   #:phoe-toolbox
-   #:fare-csv
-   #:drakma
-   #:split-sequence
-   #:cl-furcadia/clos)
-  (:import-from #:local-time #:encode-timestamp #:timestamp>)
-  (:import-from #:trivial-download #:download)
-  (:export
-   ;; Functions
-   #:*news-sources*
-   #:*example-news-sources*
-   #:get-all-news
-   ;; Reexport of news symbols from CL-FURCADIA/CLOS
-   #:news
-   #:title #:contents #:category #:date #:datestring #:url #:image-url
-   #:image-filename))
-
 (in-package #:cl-furcadia/news)
 
 ;;; HTTP news retrieval
 
-(defvar *news-sources* '()
-  "An alist of all news sources, where keys are keywords and values are URLs.")
-
-(defvar *example-news-sources*
+(defvar *news-sources*
   '("http://news.furcadia.com/current"
     "http://raptorlauncher.github.io/news.txt")
-  "Example news sources known to be usable at the time of writing this code.")
+  "An alist of all news sources, where keys are keywords and values are URLs.
+The default value contains URLs known to be good at the time of writing this
+library.
+\
+This variable is expected to be rebound by clients which use it.")
 
-(defun get-all-news (urls &key last-modified (mapcar #'mapcar))
+(defun get-news (&key (urls *news-sources*) last-modified (mapcar #'mapcar))
   "Fetches all news from the provided URLs and returns them sorted from newest
 to oldest. The second value returns the newest date fetched from the news
-sources and, if supplied, the LAST-MODIFIED argument.
+sources and, if supplied, the LAST-MODIFIED keyword argument.
 The function under the MAPCAR argument can be replaced by a parallel
 implementation, such as PMAPCAR from the LPARALLEL package."
   (check-type last-modified (or null string))
+  (check-type mapcar function)
   (let ((strings (funcall mapcar #'http-get-news urls))
         (news '())
         (dates '()))
@@ -89,7 +70,7 @@ objects, sorted from newest."
 
 ;; TODO implement this in Raptor Launcher instead, since it'll have both
 ;; drakma and lparallel in its dependencies
-;; (defun http-download-all (urls directory)
+;; (defun http-download-all (urls directo3ry)
 ;;   (flet ((http-download (url pathname)
 ;;            ;; TODO logging here
 ;;            (download url pathname :quiet t)))
