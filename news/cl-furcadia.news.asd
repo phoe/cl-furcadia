@@ -12,7 +12,8 @@
                #:local-time
                #:fare-csv
                #:split-sequence
-               #:drakma)
+               #:drakma
+               #:cl-furcadia.clos)
   :serial t
   :components ((:file "package")
                (:file "news")))
