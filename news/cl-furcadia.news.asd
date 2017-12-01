@@ -9,6 +9,7 @@
   :license "BSD 3-clause"
   :depends-on (#:alexandria
                #:phoe-toolbox
+               #:local-time
                #:fare-csv
                #:split-sequence
                #:drakma)
