@@ -13,10 +13,10 @@
                #:drakma
                #:trivial-download
                #:cl-furcadia.base
-               #:cl-furcadia.date-parser
                #:cl-furcadia.constants
                #:cl-furcadia.clos
                #:cl-furcadia.constants+clos
+               #:cl-furcadia.date-parser
                #:cl-furcadia.news
                #:cl-furcadia.remap)
   :components ((:file "package")))
