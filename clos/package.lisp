@@ -20,4 +20,8 @@
    ;; Digo class and accessors
    #:digo
    #:index #:name #:version #:freep #:exclusivep #:alternate-form
+   ;; News class and acccessors
+   #:news
+   #:title #:contents #:category #:date #:datestring #:url #:image-url
+   #:image-filename
    ))

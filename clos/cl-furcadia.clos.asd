@@ -14,4 +14,5 @@
   :components ((:file "package")
                (:file "utils")
                (:file "digo")
-               (:file "furre")))
+               (:file "furre")
+               (:file "news")))
