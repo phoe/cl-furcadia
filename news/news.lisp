@@ -19,7 +19,6 @@
    #:*news-sources*
    #:*example-news-sources*
    #:get-all-news
-   ;;#:http-download-all ;; deprecated, TBD in Raptor Launcher
    ;; Reexport of news symbols from CL-FURCADIA/CLOS
    #:news
    #:title #:contents #:category #:date #:datestring #:url #:image-url
@@ -37,16 +36,23 @@
     "http://raptorlauncher.github.io/news.txt")
   "Example news sources known to be usable at the time of writing this code.")
 
-(defun get-all-news (urls &optional last-modified)
+(defun get-all-news (urls &key last-modified (mapcar #'mapcar))
   "Fetches all news from the provided URLs and returns them sorted from newest
 to oldest. The second value returns the newest date fetched from the news
-sources and, if supplied, the LAST-MODIFIED argument."
+sources and, if supplied, the LAST-MODIFIED argument.
+The function under the MAPCAR argument can be replaced by a parallel
+implementation, such as PMAPCAR from the LPARALLEL package."
   (check-type last-modified (or null string))
-  (multiple-value-bind (news dates)
-      (multiple-value-mapcar (compose #'prepare-news #'http-get-news) urls)
+  (let ((strings (funcall mapcar #'http-get-news urls))
+        (news '())
+        (dates '()))
+    (dolist (string strings)
+      (multiple-value-bind (new date) (prepare-news string)
+        (appendf news new)
+        (push date dates)))
     (when last-modified
-      (setf dates (cons last-modified dates)))
-    (values (sort (apply #'nconc news) #'timestamp> :key #'date)
+      (push last-modified dates))
+    (values (sort news #'timestamp> :key #'date)
             (extremum dates #'string>))))
 
 (defun http-get-news (url)

@@ -14,7 +14,7 @@
               :initarg :category)
    (%date :accessor date
           :initarg :date)
-   (%datestring :accessor datestringm
+   (%datestring :accessor datestring
                 :initarg :datestring)
    (%url :accessor url
          :initarg :url)
