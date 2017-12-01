@@ -12,7 +12,25 @@
    #:drakma
    #:split-sequence)
   (:import-from #:local-time #:encode-timestamp #:timestamp>)
-  (:import-from #:trivial-download #:download))
+  (:import-from #:trivial-download #:download)
+  (:export
+   ;; Functions
+   #:*news-sources*
+   #:*example-news-sources*
+   #:get-all-news
+   #:http-download
+   #:http-download-all
+   ;; News class
+   #:news
+   #:title
+   #:contents
+   #:category
+   #:date
+   #:datestring
+   #:url
+   #:image-url
+   #:image-filename
+   ))
 
 (in-package #:cl-furcadia/news)
 
@@ -57,6 +75,7 @@ sources and, if supplied, the LAST-MODIFIED argument."
 
 ;;; News class
 
+;; TODO protocolize this
 (defclass news ()
   ((%title :accessor title
            :initarg :title)
