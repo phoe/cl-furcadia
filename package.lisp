@@ -4,15 +4,16 @@
 ;;;; package.lisp
 
 (uiop:define-package #:cl-furcadia
-  (:use
-   #:cl
-   #:cl-furcadia/base
-   #:cl-furcadia/date-parser
-   #:cl-furcadia/constants
-   #:cl-furcadia/clos
-   #:cl-furcadia/constants+clos
-   #:cl-furcadia/news
-   #:cl-furcadia/remap)
+    (:use
+     #:cl
+     #:cl-furcadia/base
+     #:cl-furcadia/date-parser
+     #:cl-furcadia/constants
+     #:cl-furcadia/clos
+     #:cl-furcadia/constants+clos
+     #:cl-furcadia/news
+     #:cl-furcadia/remap
+     #:cl-furcadia/characters)
   (:reexport
    #:cl-furcadia/base
    #:cl-furcadia/date-parser
@@ -20,4 +21,5 @@
    #:cl-furcadia/clos
    #:cl-furcadia/constants+clos
    #:cl-furcadia/news
-   #:cl-furcadia/remap))
+   #:cl-furcadia/remap
+   #:cl-furcadia/characters))
