@@ -1,10 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; CL-FURCADIA
 ;;;; © Michał "phoe" Herda 2017
-;;;; cl-furcadia.characters.asd
+;;;; cl-furcadia.ws.asd
 
-(asdf:defsystem #:cl-furcadia.characters
-  :description "Character handling library for Furcadia."
+(asdf:defsystem #:cl-furcadia.ws
+  :description "Library for handling Furcadia web services."
   :author "Michał \"phoe\" Herda <phoe@openmailbox.org>"
   :license "BSD 3-clause"
   :depends-on (#:alexandria
@@ -13,4 +13,4 @@
                #:cl-furcadia.clos)
   :serial t
   :components ((:file "package")
-               (:file "characters")))
+               (:file "ws")))

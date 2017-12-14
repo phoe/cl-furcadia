@@ -3,7 +3,7 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; characters.lisp
 
-(in-package :cl-furcadia/characters)
+(in-package :cl-furcadia/ws)
 
 ;;; Config
 ;;; TODO create config protocol

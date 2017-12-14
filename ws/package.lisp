@@ -3,7 +3,7 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; package.lisp
 
-(defpackage #:cl-furcadia/characters
+(defpackage #:cl-furcadia/ws
   (:use
    #:cl
    #:alexandria

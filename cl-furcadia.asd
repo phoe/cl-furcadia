@@ -20,5 +20,5 @@
    #:cl-furcadia.date-parser
    #:cl-furcadia.news
    #:cl-furcadia.remap
-   #:cl-furcadia.characters)
+   #:cl-furcadia.ws)
   :components ((:file "package")))
