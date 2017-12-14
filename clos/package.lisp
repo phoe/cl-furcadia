@@ -24,4 +24,7 @@
    #:news
    #:title #:contents #:category #:date #:datestring #:url #:image-url
    #:image-filename
+   ;; Account class and accessors
+   #:account
+   #:email #:id #:main #:gd #:furres
    ))

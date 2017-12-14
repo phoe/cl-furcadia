@@ -38,7 +38,7 @@
     (assert (typep (alternate-form digo) '(or null unsigned-byte)))))
 
 (defmethod (setf version) :before (new-value (object digo))
-  (check-type new-value unsigned-byte))
+  (assert (typep new-value 'unsigned-byte)))
 
 (define-readable-print (digo stream :identity nil)
   (format stream "~A (~D)" (name digo) (index digo)))

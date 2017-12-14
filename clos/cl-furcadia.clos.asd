@@ -15,4 +15,5 @@
                (:file "utils")
                (:file "digo")
                (:file "furre")
+               (:file "account")
                (:file "news")))

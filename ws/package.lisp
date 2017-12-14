@@ -8,5 +8,6 @@
    #:cl
    #:alexandria
    #:phoe-toolbox
-   #:cl-furcadia/clos)
+   #:cl-furcadia/clos
+   #:json)
   (:export))

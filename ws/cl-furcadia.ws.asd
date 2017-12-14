@@ -10,6 +10,7 @@
   :depends-on (#:alexandria
                #:phoe-toolbox
                #:drakma
+               #:cl-json
                #:cl-furcadia.clos)
   :serial t
   :components ((:file "package")

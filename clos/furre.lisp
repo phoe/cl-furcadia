@@ -9,8 +9,6 @@
 (defclass furre ()
   ((%name :reader name
           :initarg :name)
-   (%shortname :reader shortname
-               :initarg :shortname)
    (%uid :accessor uid
          :initarg uid)
    (%description :accessor description
@@ -62,37 +60,8 @@
   "The provided shortname ~S does not match the provided name ~
 ~S. (Should be ~S.)")
 
-(define-constructor (furre)
-  ;; Name: must be provided.
-  (check-boundp furre %name)
-  ;; Shortname: must be empty or suiting the name.
-  (let* ((name (name furre))
-         (shortname (name-shortname name)))
-    (if (slot-boundp furre '%shortname)
-        (restart-case (unless (string= (shortname furre) shortname)
-                        (error *shortname-mismatch*
-                               (shortname furre) name shortname))
-          (continue ()
-            :report "Use the computed shortname."
-            (setf (slot-value furre '%shortname) shortname)))
-        (setf (slot-value furre '%shortname) shortname)))
-  ;; UID: if provided, must be an integer.
-  (when (slot-boundp furre '%uid) ;; TODO add SETF type guard
-    (check-type (uid furre) unsigned-byte))
-  ;; Description: if provided, must be a string.
-  (when (slot-boundp furre '%description) ;; TODO add SETF type guard
-    (check-type (description furre) unsigned-byte))
-  ;; Color code: if provided, must be a string.
-  (when (slot-boundp furre '%color-code) ;; TODO add SETF type guard
-    (check-type (color-code furre) unsigned-byte))
-  ;; Digo: if provided, must be an unsigned-byte.
-  (when (slot-boundp furre '%digo) ;; TODO add SETF type guard
-    (check-type (digo furre) unsigned-byte))
-  ;; Wings: if provided, must be an unsigned-byte.
-  (when (slot-boundp furre '%wings) ;; TODO add SETF type guard
-    (check-type (wings furre) unsigned-byte))
-
-  )
+(defmethod shortname ((furre furre))
+  (name-shortname (name furre)))
 
 (define-readable-print (furre stream :identity nil)
   (format stream "~S" (name furre)))
