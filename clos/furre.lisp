@@ -5,60 +5,82 @@
 
 (in-package #:cl-furcadia/clos)
 
-;; TODO compute all sane default values and their types and store them here
 (defclass furre ()
-  ((%name :reader name
-          :initarg :name)
+  ((%name :accessor name
+          :initarg :name
+          :initform "")
    (%uid :accessor uid
-         :initarg uid)
+         :initarg :uid
+         :initform -1)
+   (%last-login :accessor last-login
+                :initarg :last-login
+                :initform 0)
    (%description :accessor description
-                 :initarg :description)
+                 :initarg :description
+                 :initform "")
    (%color-code :accessor color-code
-                :initarg :color-code)
+                :initarg :color-code
+                :initform "w###############")
    (%digo :accessor digo
-          :initarg :digo)
+          :initarg :digo
+          :initform 0)
    (%wings :accessor wings
-           :initarg :wings)
+           :initarg :wings
+           :initform 0)
    (%portrait :accessor portrait
-              :initarg :portrait)
+              :initarg :portrait
+              :initform 0)
    (%tag :accessor tag
-         :initarg :tag)
-   (%whisper-response :accessor whisper-response
-                      :initarg :whisper-response)
+         :initarg :tag
+         :initform 0)
+   (%auto-response :accessor auto-response
+                   :initarg :auto-response
+                   :initform "")
+   (%auto-response-p :accessor auto-response-p
+                     :initarg :auto-response-p
+                     :initform nil)
    (%afk-description :accessor afk-description
-                     :initarg :afk-description)
+                     :initarg :afk-description
+                     :initform "")
    (%afk-whisper :accessor afk-whisper
-                 :initarg :afk-whisper)
-   (%afk-whisper-response :accessor afk-whisper-response
-                          :initarg :afk-whisper-response)
+                 :initarg :afk-whisper
+                 :initform "")
    (%afk-color-code :accessor afk-color-code
-                    :initarg :afk-color-code)
+                    :initarg :afk-color-code
+                    :initform "w###############")
    (%afk-digo :accessor afk-digo
-              :initarg :afk-digo)
+              :initarg :afk-digo
+              :initform 0)
    (%afk-wings :accessor afk-wings
-               :initarg :afk-wings)
+               :initarg :afk-wings
+               :initform 0)
    (%afk-portrait :accessor afk-portrait
-                  :initarg :afk-portrait)
+                  :initarg :afk-portrait
+                  :initform 0)
    (%afk-time :accessor afk-time
-              :initarg :afk-time)
+              :initarg :afk-time
+              :initform 0)
    (%afk-max-time :accessor afk-max-time
-                  :initarg :afk-max-time)
+                  :initarg :afk-max-time
+                  :initform 0)
    (%digos :accessor digos
-           :initarg :digos)
+           :initarg :digos
+           :initform '())
    (%lifers :accessor lifers
-            :initarg :lifers)
+            :initarg :lifers
+            :initform '())
    (%portraits :accessor portraits
-               :initarg :portraits)
+               :initarg :portraits
+               :initform '())
    (%specitags :accessor specitags
-               :initarg :specitags)
+               :initarg :specitags
+               :initform '())
    (%specitag-remap :accessor specitag-remap
-                    :initarg :specitag-remap)
+                    :initarg :specitag-remap
+                    :initform "w###############")
    (%costumes :accessor costumes
-              :initarg :costumes)))
-
-(defparameter *shortname-mismatch*
-  "The provided shortname ~S does not match the provided name ~
-~S. (Should be ~S.)")
+              :initarg :costumes
+              :initform '())))
 
 (defmethod shortname ((furre furre))
   (name-shortname (name furre)))

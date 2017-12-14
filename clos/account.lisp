@@ -8,6 +8,8 @@
 (defclass account ()
   ((%email :reader email
            :initarg :email)
+   (%password :writer password
+              :initarg :password)
    (%id :accessor id
         :initarg :id)
    (%main :accessor main
@@ -17,7 +19,15 @@
         :initform 0)
    (%furres :accessor furres
             :initarg :furres
-            :initform '())))
+            :initform '())
+   (%session :accessor session
+             :initarg :session
+             :initform nil)))
+
+(define-constructor (account json-characters)
+  (when (and json-characters (not (slot-boundp account '%furres)))
+    (setf (furres account)
+          (mapcar #'character-furre json-characters))))
 
 (define-readable-print (account stream :identity nil)
-  (format stream "(~A)" (email account)))
+  (format stream "~A" (email account)))

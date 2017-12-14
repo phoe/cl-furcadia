@@ -75,6 +75,29 @@ cookie jar with associated login cookies."
          (json (decode-json (make-string-input-stream subseq))))
     json))
 
+(defun account-snames (account-json)
+  (mapcar (lambda (x) (assoc-value x :shortname))
+          (assoc-value account-json :characters)))
+
+(defun account-last-logins (account-json)
+  (mapcar (lambda (x) (assoc-value x :login-date))
+          (assoc-value account-json :characters)))
+
+(defun json-account (account-json)
+  (let* ((email (assoc-value account-json :email))
+         (id (parse-integer (assoc-value account-json :aid)))
+         (main (assoc-value account-json :main))
+         (gd (assoc-value account-json :gd))
+         (session (assoc-value account-json :session)))
+    (values (make-instance 'account :email email :id id :main main
+                                    :gd gd :session session)
+            (account-snames account-json)
+            (account-last-logins account-json))))
+
+;;; TODO export
+(defun fetch-account (config)
+  (json-account (http-get-account config)))
+
 ;;; Fetch furre
 
 (defvar *url-fured-load*
@@ -87,19 +110,59 @@ cookie jar with associated login cookies."
                                    :cookie-jar (cookie-jar config))))
     (decode-json (make-string-input-stream page))))
 
-;;; TODO create an account class
+(defparameter *furre-json-keywords*
+  `((:name name ,(lambda (x) (substitute #\Space #\| x)))
+    (:uid uid parse-integer)
+    (:desc description)
+    (:colr color-code)
+    (:digo digo)
+    (:wing wings)
+    (:port portrait parse-integer)
+    (:tag tag parse-integer)
+    (:aresp auto-response)
+    (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
+    (:adesc afk-description)
+    (:awhsp afk-whisper)
+    (:acolr afk-color-code)
+    (:adigo afk-digo)
+    (:awing afk-wings)
+    (:aport afk-portrait parse-integer)
+    (:atime afk-time parse-integer)
+    (:amaxtime afk-max-time parse-integer)
+    (:digos digos)
+    (:lifers lifers)
+    (:ports portraits)
+    (:specitags specitags)
+    (:specitag-remap specitag-remap)
+    (:costumes costumes)))
 
-(defun json-account (account-json)
-  (let* ((email (assoc-value account-json :email))
-         (id (parse-integer (assoc-value account-json :aid)))
-         (main (assoc-value account-json :main))
-         (gd (assoc-value account-json :gd))
-         (characters (assoc-value account-json :characters)))
-    (values (make-instance 'account :email email :id id :main main :gd gd)
-            characters)))
+(defparameter *furre-json-ignored-keywords*
+  '(:snam :state))
 
-;;; TODO export after creating account class
-(defun account-snames (account-json)
-  "Given an account JSON"
-  (mapcar (lambda (x) (cdr (assoc :shortname x)))
-          (cdr (assoc :characters account-json))))
+(defun json-furre (json)
+  (loop with instance = (make-instance 'furre)
+        for (keyword . value) in json
+        for entry = (assoc keyword *furre-json-keywords*)
+        if (null entry)
+          collect (cons keyword value) into unknowns
+        else unless (member keyword *furre-json-ignored-keywords*) do
+          (destructuring-bind (keyword accessor . maybe-fn) entry
+            (declare (ignore keyword))
+            (let* ((fn (or (car maybe-fn) #'identity))
+                   (setf (fdefinition (list 'setf accessor))))
+              (funcall setf (funcall fn value) instance)))
+        finally (return (values instance unknowns))))
+
+;;; TODO export
+(defun fetch-furre (sname config)
+  (json-furre (http-load-furre sname config)))
+
+;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
+(defun fetch-everything (config)
+  (multiple-value-bind (account snames last-logins) (fetch-account config)
+    (let ((furres (mapcar (rcurry #'fetch-furre config) snames)))
+      (setf (furres account) furres)
+      (loop for furre in furres
+            for last-login in last-logins
+            do (setf (last-login furre) last-login)))
+    account))
