@@ -166,3 +166,5 @@ cookie jar with associated login cookies."
             for last-login in last-logins
             do (setf (last-login furre) last-login)))
     account))
+
+;;; TODO save furre to Furcadia WS
