@@ -26,5 +26,5 @@
    #:image-filename
    ;; Account class and accessors
    #:account
-   #:email #:id #:main #:gd #:furres
+   #:email #:id #:main #:gd #:furres #:session
    ))

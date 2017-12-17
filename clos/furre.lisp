@@ -20,7 +20,7 @@
                  :initform "")
    (%color-code :accessor color-code
                 :initarg :color-code
-                :initform "w###############")
+                :initform "")
    (%digo :accessor digo
           :initarg :digo
           :initform 0)
@@ -47,7 +47,7 @@
                  :initform "")
    (%afk-color-code :accessor afk-color-code
                     :initarg :afk-color-code
-                    :initform "w###############")
+                    :initform "")
    (%afk-digo :accessor afk-digo
               :initarg :afk-digo
               :initform 0)
@@ -77,7 +77,7 @@
                :initform '())
    (%specitag-remap :accessor specitag-remap
                     :initarg :specitag-remap
-                    :initform "w###############")
+                    :initform "")
    (%costumes :accessor costumes
               :initarg :costumes
               :initform '())))

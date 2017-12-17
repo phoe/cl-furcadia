@@ -136,7 +136,7 @@ cookie jar with associated login cookies."
     (:specitag-remap specitag-remap)
     (:costumes costumes)))
 
-(defparameter *furre-json-ignored-keywords*
+(defparameter *json-furre-ignored-keywords*
   '(:snam :state))
 
 (defun json-furre (json)
@@ -145,7 +145,7 @@ cookie jar with associated login cookies."
         for entry = (assoc keyword *furre-json-keywords*)
         if (null entry)
           collect (cons keyword value) into unknowns
-        else unless (member keyword *furre-json-ignored-keywords*) do
+        else unless (member keyword *json-furre-ignored-keywords*) do
           (destructuring-bind (keyword accessor . maybe-fn) entry
             (declare (ignore keyword))
             (let* ((fn (or (car maybe-fn) #'identity))
@@ -167,4 +167,29 @@ cookie jar with associated login cookies."
             do (setf (last-login furre) last-login)))
     account))
 
-;;; TODO save furre to Furcadia WS
+(defun furre-json (furre account)
+  (let* ((session (session account))
+         (furre-data
+           (loop for (keyword fn) in *furre-json-keywords*
+                 for keystring = (string-downcase (princ-to-string keyword))
+                 for value = (princ-to-string (or (funcall fn furre) ""))
+                 unless (string= value "")
+                   collect (cons keystring value)))
+         (data (nconc furre-data (list (cons "tokenRequest" "true")
+                                       (cons "tokenCostume" "-1")
+                                       (cons session "1")))))
+    data))
+
+(defvar *url-fured-save*
+  "https://cms.furcadia.com/fured/saveCharacter.php")
+
+;;; TODO export
+(defun http-save-furre (furre account config)
+  (let* ((json (furre-json furre account))
+         (response (drakma:http-request *url-fured-save*
+                                        :method :post
+                                        :parameters json
+                                        :cookie-jar (cookie-jar config)))
+         (result (decode-json (make-string-input-stream response))))
+    (values (assoc-value result :login--url)
+            result)))
