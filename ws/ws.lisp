@@ -174,11 +174,10 @@ cookie jar with associated login cookies."
                  for keystring = (string-downcase (princ-to-string keyword))
                  for value = (princ-to-string (or (funcall fn furre) ""))
                  unless (string= value "")
-                   collect (cons keystring value)))
-         (data (nconc furre-data (list (cons "tokenRequest" "true")
-                                       (cons "tokenCostume" "-1")
-                                       (cons session "1")))))
-    data))
+                   collect (cons keystring value))))
+    (nconc furre-data (list (cons "tokenRequest" "true")
+                            (cons "tokenCostume" "-1")
+                            (cons session "1")))))
 
 (defvar *url-fured-save*
   "https://cms.furcadia.com/fured/saveCharacter.php")
