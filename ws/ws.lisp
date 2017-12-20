@@ -5,41 +5,28 @@
 
 (in-package :cl-furcadia/ws)
 
-;;; Config
-;;; TODO create config protocol
-
-(defun make-config ()
-  (let ((config (make-hash-table)))
-    (prog1 config
-      (setf (cookie-jar config) (make-instance 'drakma:cookie-jar)))))
-
-(defun cookie-jar (config)
-  (gethash :cookie-jar config))
-
-(defun (setf cookie-jar) (new-value config)
-  (setf (gethash :cookie-jar config) new-value))
-
 ;;; Fetch login page
 
 (defvar *url-login-get*
   "https://cms.furcadia.com/login")
 
-(defun http-get-login-secret (&optional (config (make-config)))
-  (let* ((page (drakma:http-request *url-login-get*
-                                    :cookie-jar (cookie-jar config)))
-         (start (search "<input type=\"hidden\" name=\"return\"" page))
-         (cut-page (subseq page (1+ start)))
-         (start2 (search "<input" cut-page))
-         (result (subseq cut-page (+ start2 27) (+ start2 27 32))))
-    (assert (hexadecimal-string-p result))
-    result))
+(defun http-get-login-secret (&optional cookie-jar)
+  (let ((cookie-jar (or cookie-jar (make-instance 'drakma:cookie-jar))))
+    (let* ((page (drakma:http-request *url-login-get*
+                                      :cookie-jar cookie-jar))
+           (start (search "<input type=\"hidden\" name=\"return\"" page))
+           (cut-page (subseq page (1+ start)))
+           (start2 (search "<input" cut-page))
+           (result (subseq cut-page (+ start2 27) (+ start2 27 32))))
+      (assert (hexadecimal-string-p result))
+      result)))
 
 ;;; Do login
 
 (defvar *url-login-post*
   "https://cms.furcadia.com/index.php?option=com_sphinx&task=user.login")
 
-(defun http-post-login (email password login-secret config)
+(defun http-post-login (email password login-secret cookie-jar)
   (flet ((parameters (email password login-secret)
            `(("username" . ,email)
              ("password" . ,password)
@@ -48,27 +35,25 @@
            (page (drakma:http-request *url-login-post*
                                       :method :post
                                       :parameters parameters
-                                      :cookie-jar (cookie-jar config))))
+                                      :cookie-jar cookie-jar)))
       (when (search "Logout" page) page))))
 
-;; TODO export
 (defun login (email password)
   "Performs a full login with the provided email and password, returning the
 cookie jar with associated login cookies."
-  (let* ((config (make-config))
-         (login-secret (http-get-login-secret config)))
-    (when (http-post-login email password login-secret config)
-      config)))
+  (let* ((cookie-jar (make-instance 'drakma:cookie-jar))
+         (login-secret (http-get-login-secret cookie-jar)))
+    (when (http-post-login email password login-secret cookie-jar)
+      cookie-jar)))
 
 ;;; Fetch account
 
 (defvar *url-fured-page*
   "https://cms.furcadia.com/fured/")
 
-;;; TODO export
-(defun http-get-account (config)
+(defun http-get-account (cookie-jar)
   (let* ((page (drakma:http-request *url-fured-page*
-                                    :cookie-jar (cookie-jar config)))
+                                    :cookie-jar cookie-jar))
          (begin (search "account.JSON=" page))
          (end (search (string #\Newline) page :start2 begin))
          (subseq (subseq page (+ begin 13) (1- end)))
@@ -94,22 +79,24 @@ cookie jar with associated login cookies."
             (account-snames account-json)
             (account-last-logins account-json))))
 
-;;; TODO export
-(defun fetch-account (config)
-  (json-account (http-get-account config)))
+(defun fetch-account (cookie-jar)
+  "Fetches the account associated with the provided cookie jar from the Furcadia
+web services."
+  (json-account (http-get-account cookie-jar)))
 
 ;;; Fetch furre
 
 (defvar *url-fured-load*
   "https://cms.furcadia.com/fured/loadCharacter.php")
 
-(defun http-load-furre (sname config)
+(defun http-load-furre (sname cookie-jar)
   (let ((page (drakma:http-request *url-fured-load*
                                    :method :post
                                    :parameters `(("name" . ,sname))
-                                   :cookie-jar (cookie-jar config))))
+                                   :cookie-jar cookie-jar)))
     (decode-json (make-string-input-stream page))))
 
+;;; TODO do thorough testing for all availeble attributes
 (defparameter *furre-json-keywords*
   `((:name name ,(lambda (x) (substitute #\Space #\| x)))
     (:uid uid parse-integer)
@@ -153,19 +140,15 @@ cookie jar with associated login cookies."
               (funcall setf (funcall fn value) instance)))
         finally (return (values instance unknowns))))
 
-;;; TODO export
-(defun fetch-furre (sname config)
-  (json-furre (http-load-furre sname config)))
+(defun fetch-furre (sname cookie-jar)
+  "Fetches the furre with the provided shortname from the Furcadia web services,
+using the provided cookie jar."
+  (json-furre (http-load-furre sname cookie-jar)))
 
-;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
-(defun fetch-everything (config)
-  (multiple-value-bind (account snames last-logins) (fetch-account config)
-    (let ((furres (mapcar (rcurry #'fetch-furre config) snames)))
-      (setf (furres account) furres)
-      (loop for furre in furres
-            for last-login in last-logins
-            do (setf (last-login furre) last-login)))
-    account))
+;;; Save furre to Furcadia WS
+
+(defvar *url-fured-save*
+  "https://cms.furcadia.com/fured/saveCharacter.php")
 
 (defun furre-json (furre account)
   (let* ((session (session account))
@@ -179,16 +162,28 @@ cookie jar with associated login cookies."
                             (cons "tokenCostume" "-1")
                             (cons session "1")))))
 
-(defvar *url-fured-save*
-  "https://cms.furcadia.com/fured/saveCharacter.php")
-
-;;; TODO export
-(defun http-save-furre (furre account config)
+(defun http-save-furre (furre account cookie-jar)
   (let* ((json (furre-json furre account))
          (response (drakma:http-request *url-fured-save*
                                         :method :post
                                         :parameters json
-                                        :cookie-jar (cookie-jar config)))
+                                        :cookie-jar cookie-jar))
          (result (decode-json (make-string-input-stream response))))
     (values (assoc-value result :login--url)
             result)))
+
+(defun save-furre (furre account cookie-jar)
+  "Saves the provided furre to Furcadia web services, using the provided account
+and cookie jar. Returns the Furcadia login URI, or NIL if the save was
+unsuccessful."
+  (values (http-save-furre furre account cookie-jar)))
+
+;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
+(defun fetch-everything (config)
+  (multiple-value-bind (account snames last-logins) (fetch-account config)
+    (let ((furres (mapcar (rcurry #'fetch-furre config) snames)))
+      (setf (furres account) furres)
+      (loop for furre in furres
+            for last-login in last-logins
+            do (setf (last-login furre) last-login)))
+    account))

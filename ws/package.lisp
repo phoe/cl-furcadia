@@ -10,4 +10,8 @@
    #:phoe-toolbox
    #:cl-furcadia/clos
    #:json)
-  (:export))
+  (:export
+   #:login
+   #:fetch-account
+   #:fetch-furre
+   #:save-furre))
