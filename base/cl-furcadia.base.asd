@@ -10,5 +10,4 @@
   :serial t
   :depends-on (#:alexandria
                #:phoe-toolbox)
-  :components ((:file "package")
-               (:file "base")))
+  :components ((:file "base")))

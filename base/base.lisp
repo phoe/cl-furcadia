@@ -3,15 +3,17 @@
 ;;;; © Michał "phoe" Herda 2017
 ;;;; utils.lisp
 
-(in-package #:cl-furcadia/base)
+(defpackage #:cl-furcadia/base
+  (:use
+   #:cl
+   #:alexandria
+   #:phoe-toolbox)
+  (:export
+   #:from-220
+   #:to-220
+   #:name-shortname))
 
-;; ;;; TODO remove this and depend on phoe-toolbox
-;; (defun read-data-file (system pathname)
-;;   "Reads the data file from the provided pathname. The pathname should be
-;; a system relative pathname."
-;;   (let ((full-pathname (asdf:system-relative-pathname system pathname)))
-;;     (with-input-from-file (stream full-pathname)
-;;       (with-standard-io-syntax (read stream)))))
+(in-package #:cl-furcadia/base)
 
 (defun from-220 (char)
   "Converts a character into a Furcadia base-220 integer."
