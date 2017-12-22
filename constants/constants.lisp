@@ -5,26 +5,6 @@
 
 (in-package #:cl-furcadia/constants)
 
-;;; Data files
-
-(defvar *digos*
-  (read-data-file :cl-furcadia.constants "data/digos.lisp")
-  "Hash-table containing digo data. The keys are unsigned-bytes and the values
-are instances of CL-FURCADIA/CLOS:DIGO class.")
-
-(defvar *gradients*
-  (read-data-file :cl-furcadia.constants "data/gradients.lisp")
-  "Hash-table containing gradient data. The keys are in form (SYMBOL STRING),
-where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
-
-(defvar *color-names*
-  (read-data-file :cl-furcadia.constants "data/color-names.lisp")
-  "Hash-table containing color names. Keys are symbols from *COLOR-TYPES*.")
-
-(defvar *color-values*
-  (read-data-file :cl-furcadia.constants "data/color-values.lisp")
-  "Hash table between integers and their respective remap types.")
-
 ;;; Types
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
@@ -45,6 +25,26 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
 (deftype wings ()
   "A symbol denoting a Furcadia wing type."
   '#.`(member ,@*wings*))
+
+;;; Data files
+
+(defvar *digos*
+  (read-data-file :cl-furcadia.constants "data/digos.lisp")
+  "Hash-table containing digo data. The keys are unsigned-bytes and the values
+are instances of CL-FURCADIA/CLOS:DIGO class.")
+
+(defvar *gradients*
+  (read-data-file :cl-furcadia.constants "data/gradients.lisp")
+  "Hash-table containing gradient data. The keys are in form (SYMBOL STRING),
+where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
+
+(defvar *color-names*
+  (read-data-file :cl-furcadia.constants "data/color-names.lisp")
+  "Hash-table containing color names. Keys are symbols from *COLOR-TYPES*.")
+
+(defvar *color-values*
+  (read-data-file :cl-furcadia.constants "data/color-values.lisp")
+  "Hash table between integers and their respective remap types.")
 
 ;;; Other variables
 
