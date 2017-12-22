@@ -5,6 +5,7 @@
 
 (in-package :cl-furcadia/protocol)
 
+;;; TODO does the protocol-redefining code in PROTEST even make sense?
 (define-protocol account
     (:description "The ACCOUNT protocol describes objects representing ~
 accounts for the MMOSG Furcadia. These accounts can, among others, log into ~
@@ -31,10 +32,10 @@ instantiating the account and is otherwise immutable."
   "Returns the ID of the account."
   (:function (setf id) ((new-value integer) (account account)) integer)
   "Sets the ID of the account."
-  (:function main ((account account)) t) ;; TODO type (OR FURRE NULL), not T
+  (:function main ((account account)) (or furre null))
   "Returns the main character of the account."
-  (:function (setf main) ((new-value t) (account account)) t)
-  ;; TODO type (OR FURRE NULL), not T
+  (:function (setf main)
+             ((new-value (or furre null)) (account account)) (or furre null))
   "Sets the main character of the account."
   (:function gd ((account account)) unsigned-byte)
   "Returns the Dragonscales available on the account (100 units = 1 GD)."
