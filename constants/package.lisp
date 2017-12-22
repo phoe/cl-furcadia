@@ -11,7 +11,12 @@
   (:export
    ;; REMAP
    #:color
+   #:wings
+   #:wings-name
    #:*color-types*
+   #:*digos*
+   #:*wings*
+   #:*wingable-digos*
    #:*gradients*
    #:*color-names*
    #:*color-values*

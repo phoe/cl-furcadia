@@ -6,6 +6,8 @@
 (in-package :cl-furcadia/protocol)
 
 ;;; TODO does the protocol-redefining code in PROTEST even make sense?
+;;; TODO define a way in PROTEST to make tests that are run for all subclasses
+;;; of the protocol class
 (define-protocol account
     (:description "The ACCOUNT protocol describes objects representing ~
 accounts for the MMOSG Furcadia. These accounts can, among others, log into ~

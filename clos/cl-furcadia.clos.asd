@@ -9,10 +9,11 @@
   :license "BSD 3-clause"
   :depends-on (#:alexandria
                #:phoe-toolbox
-               #:cl-furcadia.base)
+               #:cl-furcadia.base
+               #:cl-furcadia.protocol)
   :serial t
   :components ((:file "package")
-               (:file "digo")
-               (:file "furre")
-               (:file "account")
-               (:file "news")))
+               (:file "standard-digo")
+               (:file "standard-furre")
+               (:file "standard-account")
+               (:file "standard-news")))

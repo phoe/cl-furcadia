@@ -7,19 +7,23 @@
   (:use
    #:cl
    #:cl-furcadia/base
-   #:cl-furcadia/date-parser
+   #:cl-furcadia/protocol
    #:cl-furcadia/constants
-   #:cl-furcadia/clos
-   #:cl-furcadia/constants+clos
-   #:cl-furcadia/news
-   #:cl-furcadia/remap
-   #:cl-furcadia/ws)
+   ;; #:cl-furcadia/date-parser
+   ;; #:cl-furcadia/clos
+   ;; #:cl-furcadia/constants+clos
+   ;; #:cl-furcadia/news
+   ;; #:cl-furcadia/remap
+   ;; #:cl-furcadia/ws
+   )
   (:reexport
    #:cl-furcadia/base
-   #:cl-furcadia/date-parser
-   #:cl-furcadia/constants
+   #:cl-furcadia/protocol
    #:cl-furcadia/clos
-   #:cl-furcadia/constants+clos
-   #:cl-furcadia/news
-   #:cl-furcadia/remap
-   #:cl-furcadia/ws))
+   #:cl-furcadia/constants
+   ;; #:cl-furcadia/date-parser
+   ;; #:cl-furcadia/constants+clos
+   ;; #:cl-furcadia/news
+   ;; #:cl-furcadia/remap
+   ;; #:cl-furcadia/ws
+   ))

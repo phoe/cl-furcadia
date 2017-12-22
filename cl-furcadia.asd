@@ -14,11 +14,13 @@
    #:drakma
    #:trivial-download
    #:cl-furcadia.base
-   #:cl-furcadia.constants
+   #:cl-furcadia.protocol
    #:cl-furcadia.clos
-   #:cl-furcadia.constants+clos
-   #:cl-furcadia.date-parser
-   #:cl-furcadia.news
-   #:cl-furcadia.remap
-   #:cl-furcadia.ws)
+   #:cl-furcadia.constants
+   ;; #:cl-furcadia.constants+clos
+   ;; #:cl-furcadia.date-parser
+   ;; #:cl-furcadia.news
+   ;; #:cl-furcadia.remap
+   ;; #:cl-furcadia.ws
+   )
   :components ((:file "package")))

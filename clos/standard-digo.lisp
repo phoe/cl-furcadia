@@ -1,16 +1,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; CL-FURCADIA
 ;;;; © Michał "phoe" Herda 2017
-;;;; digo.lisp
+;;;; standard-digo.lisp
 
 (in-package #:cl-furcadia/clos)
 
-(defclass digo ()
+(defclass standard-digo (digo)
   ((%index :reader index
-           :initarg :index)
+           :initarg :index
+           :initform (error "Must provide DIGO."))
    (%name :reader name
           :initarg :name
-          :initform "")
+          :initform (error "Must provide NAME."))
    (%version :accessor version
              :initarg :version
              :initform nil)
@@ -22,7 +23,10 @@
                 :initform nil)
    (%alternate-form :accessor alternate-form
                     :initarg :alternate-form
-                    :initform nil)))
+                    :initform nil)
+   (%wingablep :accessor wingablep
+               :initarg :wingablep
+               :initform nil)))
 
 (define-readable-print (digo stream :identity nil)
   (format stream "~A (~D)" (name digo) (index digo)))

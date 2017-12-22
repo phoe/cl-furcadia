@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; CL-FURCADIA
 ;;;; © Michał "phoe" Herda 2017
-;;;; remap.lisp
+;;;; constants.lisp
 
 (in-package #:cl-furcadia/constants)
 
@@ -11,9 +11,15 @@
       :cape :boots :trousers :wings :accent)
     "All valid remappable color types in a Furcadia (sans outline)."))
 
-(deftype color ()
-  "A symbol denoting a Furcadia color type."
-  '#.`(member ,@*color-types*))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defvar *wings*
+    '(nil :classic :tri :butterfly :bat :prime :dragonfly)
+    "Indices of Furcadia wing types."))
+
+(defvar *digos*
+  (read-data-file :cl-furcadia.constants "data/digos.lisp")
+  "Hash-table containing digo data. The keys are unsigned-bytes and the values
+are instances of CL-FURCADIA/CLOS:DIGO class.")
 
 (defvar *gradients*
   (read-data-file :cl-furcadia.constants "data/gradients.lisp")
@@ -36,3 +42,22 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
 (defvar *genders*
   '(:female :male :unspecified)
   "Gender values possible in a Furcadia color code.")
+
+(defvar *wingable-digos*
+  '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 138 149 159 188 228 234 257)
+  "Identifiers for digos which are capable of displaying wings.")
+
+(deftype color ()
+  "A symbol denoting a Furcadia color type."
+  '#.`(member ,@*color-types*))
+
+(deftype wing ()
+  "A symbol denoting a Furcadia wing type."
+  '#.`(member ,@*wings*))
+
+(defun wings-name (wings)
+  "Given a wing type, returns it proper name in form of a string."
+  (check-type wings (or null keyword))
+  (if (null wings)
+      "No Wings"
+      (cat (string-capitalize (string wings)) " Wings")))
