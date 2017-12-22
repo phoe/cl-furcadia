@@ -7,12 +7,11 @@
 
 ;;; TODO add ACCOUNT accessor, make CL-FURCADIA's WS code set it properly
 (defclass furre ()
-  ((%name :accessor name
+  ((%uid :reader uid
+         :initarg :uid)
+   (%name :accessor name
           :initarg :name
           :initform "")
-   (%uid :accessor uid
-         :initarg :uid
-         :initform 0)
    (%last-login :accessor last-login
                 :initarg :last-login
                 :initform 0)
