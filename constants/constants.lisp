@@ -5,16 +5,7 @@
 
 (in-package #:cl-furcadia/constants)
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (defvar *color-types*
-    '(:fur :markings :hair :eyes :badge :vest :bracers
-      :cape :boots :trousers :wings :accent)
-    "All valid remappable color types in a Furcadia (sans outline)."))
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (defvar *wings*
-    '(nil :classic :tri :butterfly :bat :prime :dragonfly)
-    "Indices of Furcadia wing types."))
+;;; Data files
 
 (defvar *digos*
   (read-data-file :cl-furcadia.constants "data/digos.lisp")
@@ -34,6 +25,29 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
   (read-data-file :cl-furcadia.constants "data/color-values.lisp")
   "Hash table between integers and their respective remap types.")
 
+;;; Types
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defvar *color-types*
+    '(:fur :markings :hair :eyes :badge :vest :bracers
+      :cape :boots :trousers :wings :accent)
+    "All valid remappable color types in a Furcadia (sans outline)."))
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defvar *wings*
+    '(nil :classic :tri :butterfly :bat :prime :dragonfly)
+    "Indices of Furcadia wing types."))
+
+(deftype color ()
+  "A symbol denoting a Furcadia color type."
+  '#.`(member ,@*color-types*))
+
+(deftype wings ()
+  "A symbol denoting a Furcadia wing type."
+  '#.`(member ,@*wings*))
+
+;;; Other variables
+
 (defvar *color-code-indices*
   '(:version :fur :markings :hair :eyes :badge :vest :bracers :cape
     :boots :trousers :wings :accent :gender :species :reserved)
@@ -47,17 +61,11 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
   '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 138 149 159 188 228 234 257)
   "Identifiers for digos which are capable of displaying wings.")
 
-(deftype color ()
-  "A symbol denoting a Furcadia color type."
-  '#.`(member ,@*color-types*))
-
-(deftype wing ()
-  "A symbol denoting a Furcadia wing type."
-  '#.`(member ,@*wings*))
+;;; Utility functions
 
 (defun wings-name (wings)
   "Given a wing type, returns it proper name in form of a string."
-  (check-type wings (or null keyword))
+  (check-type wings wings)
   (if (null wings)
       "No Wings"
       (cat (string-capitalize (string wings)) " Wings")))

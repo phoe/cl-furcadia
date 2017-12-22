@@ -14,9 +14,9 @@
           :initform (error "Must provide NAME."))
    (%version :accessor version
              :initarg :version
-             :initform nil)
+             :initform 0)
    (%freep :accessor freep
-           :initarg freep
+           :initarg :freep
            :initform nil)
    (%exclusivep :accessor exclusivep
                 :initarg :exclusivep

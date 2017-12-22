@@ -5,10 +5,11 @@
 
 (in-package #:cl-furcadia/clos)
 
-;;; TODO add ACCOUNT accessor, make CL-FURCADIA's WS code set it properly
-(defclass furre ()
+;;; TODO make CL-FURCADIA's WS code set things properly
+(defclass standard-furre (furre)
   ((%uid :reader uid
-         :initarg :uid)
+         :initarg :uid
+         :initform (error "Must provide UID."))
    (%name :accessor name
           :initarg :name
           :initform "")
@@ -82,8 +83,8 @@
               :initarg :costumes
               :initform '())))
 
-(defmethod shortname ((furre furre))
+(defmethod shortname ((furre standard-furre))
   (name-shortname (name furre)))
 
-(define-readable-print (furre stream :identity nil)
-  (format stream "~S" (name furre)))
+(define-readable-print (standard-furre stream :identity nil)
+  (format stream "~S" (name standard-furre)))

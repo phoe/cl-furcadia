@@ -5,7 +5,7 @@
 
 (in-package :cl-furcadia/clos)
 
-(defclass news ()
+(defclass standard-news (news)
   ((%title :accessor title
            :initarg :title)
    (%contents :accessor contents
@@ -24,22 +24,23 @@
                     :initarg :image-filename))
   (:documentation "A piece of news."))
 
-(define-constructor (news from)
+(define-constructor (standard-news from)
   (when from
     (assert (listp from))
     (assert (= 8 (length from)))
     (destructuring-bind (title contents category date datestring
                          url image-url image-filename)
         from
-      (setf (title news) title
-            (contents news) contents
-            (category news) category
-            (date news) date
-            (datestring news) datestring
-            (url news) url
-            (image-url news) image-url
-            (image-filename news) image-filename))))
+      (setf (title standard-news) title
+            (contents standard-news) contents
+            (category standard-news) category
+            (date standard-news) date
+            (datestring standard-news) datestring
+            (url standard-news) url
+            (image-url standard-news) image-url
+            (image-filename standard-news) image-filename))))
 
-(define-readable-print (news stream :identity nil)
+(define-readable-print (standard-news stream :identity nil)
   (format stream "[~A] ~A (~A)"
-          (category news) (title news) (datestring news)))
+          (category standard-news) (title standard-news)
+          (datestring standard-news)))

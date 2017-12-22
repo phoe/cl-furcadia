@@ -12,4 +12,7 @@
                #:protest)
   :serial t
   :components ((:file "package")
-               (:file "account")))
+               (:file "account")
+               (:file "furre")
+               (:file "digo")
+               (:file "news")))

@@ -17,10 +17,9 @@
    #:cl-furcadia.protocol
    #:cl-furcadia.clos
    #:cl-furcadia.constants
-   ;; #:cl-furcadia.constants+clos
-   ;; #:cl-furcadia.date-parser
-   ;; #:cl-furcadia.news
-   ;; #:cl-furcadia.remap
-   ;; #:cl-furcadia.ws
+   #:cl-furcadia.date-parser
+   #:cl-furcadia.news
+   #:cl-furcadia.remap
+   #:cl-furcadia.ws
    )
   :components ((:file "package")))

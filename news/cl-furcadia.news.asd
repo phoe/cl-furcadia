@@ -13,6 +13,7 @@
                #:fare-csv
                #:split-sequence
                #:drakma
+               #:cl-furcadia.protocol
                #:cl-furcadia.clos)
   :serial t
   :components ((:file "package")

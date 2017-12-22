@@ -7,18 +7,10 @@
   (:use
    #:cl
    #:phoe-toolbox
-   #:cl-furcadia/base)
+   #:cl-furcadia/base
+   #:cl-furcadia/protocol)
   (:export
-   ;; REMAP
-   #:color
-   #:wings
-   #:wings-name
-   #:*color-types*
-   #:*digos*
-   #:*wings*
-   #:*wingable-digos*
+   #:color #:wings #:wings-name
+   #:*color-types*  #:*color-names* #:*color-values* #:*color-code-indices*
    #:*gradients*
-   #:*color-names*
-   #:*color-values*
-   #:*color-code-indices*
-   #:*genders*))
+   #:*digos* #:*wings* #:*wingable-digos* #:*genders*))

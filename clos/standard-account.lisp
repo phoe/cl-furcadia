@@ -5,15 +5,15 @@
 
 (in-package #:cl-furcadia/clos)
 
-(defclass account ()
+(defclass standard-account (account)
   ((%email :reader email
            :initarg :email)
-   (%password :writer password
+   (%password :accessor password
               :initarg :password
               :initform "")
    (%id :accessor id
         :initarg :id
-        :initform -1)
+        :initform 0)
    (%main :accessor main
           :initarg :main
           :initform nil)

@@ -11,13 +11,9 @@
    #:fare-csv
    #:drakma
    #:split-sequence
+   #:cl-furcadia/protocol
    #:cl-furcadia/clos)
   (:import-from #:local-time #:encode-timestamp #:timestamp>)
   (:export
-   ;; Functions
    #:*news-sources*
-   #:get-news
-   ;; Reexport of news symbols from CL-FURCADIA/CLOS
-   #:news
-   #:title #:contents #:category #:date #:datestring #:url #:image-url
-   #:image-filename))
+   #:get-news))

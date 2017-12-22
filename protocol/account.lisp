@@ -30,9 +30,10 @@ instantiating the account and is otherwise immutable."
   "Returns the password of the account."
   (:function (setf password) ((new-value string) (account account)) string)
   "Sets the password of the account."
-  (:function id ((account account)) integer)
+  (:function id ((account account)) unsigned-byte)
   "Returns the ID of the account."
-  (:function (setf id) ((new-value integer) (account account)) integer)
+  (:function (setf id)
+             ((new-value unsigned-byte) (account account)) unsigned-byte)
   "Sets the ID of the account."
   (:function main ((account account)) (or furre null))
   "Returns the main character of the account."
@@ -40,10 +41,10 @@ instantiating the account and is otherwise immutable."
              ((new-value (or furre null)) (account account)) (or furre null))
   "Sets the main character of the account."
   (:function gd ((account account)) unsigned-byte)
-  "Returns the Dragonscales available on the account (100 units = 1 GD)."
+  "Returns the Dragonscales available on the account."
   (:function (setf gd)
-             ((new-value unsigned-byte) (account account)) unsigned-byte)
-  "Sets the Dragonscales available on the account (100 units = 1 GD)."
+             ((new-value rational) (account account)) rational)
+  "Sets the Dragonscales available on the account."
   (:function furres ((account account)) list)
   "Returns a list of all furres on the account. The returned list must be a ~
 proper list of objects of type FURRE."
