@@ -9,11 +9,14 @@
   ((%email :reader email
            :initarg :email)
    (%password :writer password
-              :initarg :password)
+              :initarg :password
+              :initform "")
    (%id :accessor id
-        :initarg :id)
+        :initarg :id
+        :initform -1)
    (%main :accessor main
-          :initarg :main)
+          :initarg :main
+          :initform nil)
    (%gd :accessor gd
         :initarg :gd
         :initform 0)

@@ -12,7 +12,6 @@
                #:cl-furcadia.base)
   :serial t
   :components ((:file "package")
-               (:file "utils")
                (:file "digo")
                (:file "furre")
                (:file "account")
