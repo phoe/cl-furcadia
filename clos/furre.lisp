@@ -5,13 +5,14 @@
 
 (in-package #:cl-furcadia/clos)
 
+;;; TODO add ACCOUNT accessor, make CL-FURCADIA's WS code set it properly
 (defclass furre ()
   ((%name :accessor name
           :initarg :name
           :initform "")
    (%uid :accessor uid
          :initarg :uid
-         :initform -1)
+         :initform 0)
    (%last-login :accessor last-login
                 :initarg :last-login
                 :initform 0)

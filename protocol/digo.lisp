@@ -30,11 +30,11 @@ instantiating the digo and is otherwise immutable."
              ((new-value unsigned-byte) (digo digo)) unsigned-byte)
   "Sets the version of the digo."
   (:function freep ((digo digo)) boolean)
-  "Returns T if the digo is free, and NIL otherwise."
+  "Returns true if the digo is free, and false otherwise."
   (:function (setf freep) ((new-value boolean) (digo digo)) boolean)
   "Sets the new free status of the digo."
   (:function exclusivep ((digo digo)) boolean)
-  "Returns T if the digo is exclusive, and NIL otherwise."
+  "Returns true if the digo is exclusive, and false otherwise."
   (:function (setf exclusivep) ((new-value boolean) (digo digo)) boolean)
   "Sets the new exclusive status of the digo."
   (:function alternate-form ((digo digo)) (or unsigned-byte null))

@@ -18,7 +18,7 @@ makes a successful login to Furcadia web services."
      :tags (:cl-furcadia :account)
      :export t)
   (:class account () ())
-  "An account object. Each class participating in the protocol must subclass ~
+  "An account object. Each class participating in this protocol must subclass ~
 this protocol class."
   (:function email ((account account)) string)
   "Returns the email of the account. This value should be provided when ~
