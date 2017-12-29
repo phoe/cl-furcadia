@@ -74,8 +74,8 @@ cookie jar with associated login cookies."
          (main (assoc-value account-json :main))
          (gd (assoc-value account-json :gd))
          (session (assoc-value account-json :session)))
-    (values (make-instance 'account :email email :id id :main main
-                                    :gd gd :session session)
+    (values (make-instance 'standard-account :email email :id id :main main
+                                             :gd gd :session session)
             (account-snames account-json)
             (account-last-logins account-json))))
 
@@ -127,7 +127,7 @@ web services."
   '(:snam :state))
 
 (defun json-furre (json)
-  (loop with instance = (make-instance 'furre)
+  (loop with instance = (make-instance 'standard-furre)
         for (keyword . value) in json
         for entry = (assoc keyword *furre-json-keywords*)
         if (null entry)
