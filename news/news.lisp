@@ -24,7 +24,7 @@ The function under the MAPCAR argument can be replaced by a parallel
 implementation, such as PMAPCAR from the LPARALLEL package."
   (check-type last-modified (or null string))
   (check-type mapcar function)
-  (let ((strings (funcall mapcar #'http-get-news urls))
+  (let ((strings (funcall mapcar #'url-to-string urls))
         (news '())
         (dates '()))
     (dolist (string strings)
@@ -36,12 +36,15 @@ implementation, such as PMAPCAR from the LPARALLEL package."
     (values (sort news #'timestamp> :key #'date)
             (extremum dates #'string>))))
 
-(defun http-get-news (url)
-  "Retrieves the news from the provided URL and returns it as a string."
-  (let ((response (http-request url :external-format-out :utf-8)))
+(defun get-url (url &rest drakma-args)
+  "Retrieves the news from the provided URL and returns it as a string or a
+stream."
+  (let ((response (apply #'http-request url :external-format-out :utf-8
+                         drakma-args)))
     (etypecase response
       (string response)
-      ((vector (unsigned-byte 8)) (flex:octets-to-string response)))))
+      ((vector (unsigned-byte 8)) (flex:octets-to-string response))
+      (stream response))))
 
 (defun prepare-news (string)
   "Provided a string containing the retrieved news, returns a list of news

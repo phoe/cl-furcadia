@@ -16,4 +16,5 @@
   (:import-from #:local-time #:encode-timestamp #:timestamp>)
   (:export
    #:*news-sources*
+   #:url-get
    #:get-news))
