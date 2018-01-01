@@ -11,6 +11,7 @@
    #:cl-furcadia/protocol
    #:cl-furcadia/clos
    #:json)
+  (:import-from #:cl-furcadia/news #:get-url)
   (:export
    #:login
    #:fetch-account

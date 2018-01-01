@@ -10,8 +10,10 @@
   :depends-on (#:alexandria
                #:phoe-toolbox
                #:drakma
+               #:parse-js
                #:cl-json
                #:cl-furcadia.clos)
   :serial t
   :components ((:file "package")
-               (:file "ws")))
+               (:file "ws")
+               (:file "downloader")))

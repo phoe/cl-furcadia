@@ -24,7 +24,7 @@ The function under the MAPCAR argument can be replaced by a parallel
 implementation, such as PMAPCAR from the LPARALLEL package."
   (check-type last-modified (or null string))
   (check-type mapcar function)
-  (let ((strings (funcall mapcar #'url-to-string urls))
+  (let ((strings (funcall mapcar #'get-url urls))
         (news '())
         (dates '()))
     (dolist (string strings)
