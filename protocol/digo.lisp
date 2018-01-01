@@ -47,4 +47,10 @@ have an alternate form."
   (:function wingablep ((digo digo)) boolean)
   "Returns true if the provided digo is wingable; otherwise, returns false."
   (:function (setf wingablep) ((new-value boolean) (digo digo)) boolean)
-  "Sets if the provided digo is wingable.")
+  "Sets if the provided digo is wingable."
+  (:function fox-file ((digo digo)) (or null pathname))
+  "Returns the pathname to the FOX file associated with the digo, or NULL if ~
+there is no such file."
+  (:function fox-file
+             ((new-value (or null pathname)) (digo digo)) (or null pathname))
+  "Sets the pathname to the FOX file associated with the digo.")

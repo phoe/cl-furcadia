@@ -26,7 +26,10 @@
                     :initform nil)
    (%wingablep :accessor wingablep
                :initarg :wingablep
-               :initform nil)))
+               :initform nil)
+   (%fox-file :accessor fox-file
+              :initarg :fox-file
+              :initform nil)))
 
 (define-readable-print (digo stream :identity nil)
   (format stream "~A (~D)" (name digo) (index digo)))

@@ -8,6 +8,7 @@
    #:cl
    #:alexandria
    #:phoe-toolbox
+   #:cl-furcadia/constants
    #:cl-furcadia/protocol
    #:cl-furcadia/clos
    #:json)

@@ -64,7 +64,7 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
 ;;; Utility functions
 
 (defun wings-name (wings)
-  "Given a wing type, returns it proper name in form of a string."
+  "Given a wing type, returns its proper name in form of a string."
   (check-type wings wings)
   (if (null wings)
       "No Wings"
