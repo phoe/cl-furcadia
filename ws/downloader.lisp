@@ -66,4 +66,4 @@ Returns the list of digo indices whose version was updated."
            (loop for x = (read-byte input nil nil)
                  while x do (write-byte x file))
         (close input))
-      pathname-name)))
+      pathname)))
