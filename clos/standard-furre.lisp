@@ -5,11 +5,10 @@
 
 (in-package #:cl-furcadia/clos)
 
-;;; TODO make CL-FURCADIA's WS code set things properly
 (defclass standard-furre (furre)
-  ((%uid :reader uid
+  ((%uid :accessor uid
          :initarg :uid
-         :initform (error "Must provide UID."))
+         :initform 0)
    (%name :accessor name
           :initarg :name
           :initform "")

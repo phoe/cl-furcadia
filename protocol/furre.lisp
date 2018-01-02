@@ -76,6 +76,11 @@ false otherwise."
   "Returns the furre's AFK description."
   (:function (setf afk-description) ((new-value string) (furre furre)) string)
   "Sets the furre's AFK description."
+  (:function afk-portrait ((furre furre)) unsigned-byte)
+  "Returns the furre's AFK portrait."
+  (:function (setf afk-portrait)
+             ((unsigned-byte new-value) (furre furre)) unsigned-byte)
+  "Sets the furre's AFK portrait."
   (:function afk-whisper ((furre furre)) string)
   "Returns the furre's AFK auto-response."
   (:function (setf afk-whisper) ((new-value string) (furre furre)) string)

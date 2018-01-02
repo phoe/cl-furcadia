@@ -130,7 +130,7 @@ web services."
   (loop with instance = (make-instance 'standard-furre)
         for (keyword . value) in json
         for entry = (assoc keyword *furre-json-keywords*)
-        if (null entry)
+        if (and (null entry) (not (member keyword *json-furre-ignored-keywords*)))
           collect (cons keyword value) into unknowns
         else unless (member keyword *json-furre-ignored-keywords*) do
           (destructuring-bind (keyword accessor . maybe-fn) entry
