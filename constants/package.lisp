@@ -12,5 +12,5 @@
   (:export
    #:color #:wings #:wings-name
    #:*color-types*  #:*color-names* #:*color-values* #:*color-code-indices*
-   #:*gradients*
+   #:*gradients* #:*classic-palette*
    #:*digos* #:*wings* #:*wingable-digos* #:*genders*))

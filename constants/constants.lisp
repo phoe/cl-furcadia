@@ -46,6 +46,10 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
   (read-data-file :cl-furcadia.constants "data/color-values.lisp")
   "Hash table between integers and their respective remap types.")
 
+(defvar *classic-palette*
+  (read-data-file :cl-furcadia.constants "data/classic-palette.lisp")
+  "Furcadia classic palette in RGBA format.")
+
 ;;; Other variables
 
 (defvar *color-code-indices*
