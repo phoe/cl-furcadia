@@ -65,6 +65,23 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
   '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 138 149 159 188 228 234 257)
   "Identifiers for digos which are capable of displaying wings.")
 
+(defvar *kitterspeak*
+  '((1 . :frame) (2 . :delay) (3 . :loop) (4 . :jump) (5 . :posx) (6 . :posy)
+    (7 . :furre-x) (8 . :furre-y)
+    (9 . :draw-front) ;; legacy
+    (10 . :draw-behind) ;; legacy
+    (11 . :auto-frame-delay) (12 . :stop) (13 . :camera-state)
+    (14 . :rand-frame-delay) (15 . :shape-frame)
+    (16 . :shape-frame) ;; obsolete
+    (17 . :opacity) (18 . :slide-posx) (19 . :slide-posy) (20 . :slide-furrex)
+    (21 . :slide-furrey) (22 . :slide-opacity) (23 . :show-bgframe)
+    (24 . :show-fgframe) (25 . :show-bgshape) (26 . :show-fgshape)
+    (27 . :hide-bg) (28 . :hide-fg) (29 . :frame-behind) (30 . :frame-front)
+    (31 . :move-forward) (32 . :move-backward))
+  "The alist of Kitterspeak step/rule codes and their names.
+\
+Rules 14+ seem to be unused in FOX1.")
+
 ;;; Utility functions
 
 (defun wings-name (wings)
