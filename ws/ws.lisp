@@ -187,3 +187,23 @@ unsuccessful."
             for last-login in last-logins
             do (setf (last-login furre) last-login)))
     account))
+
+;; Load portrait
+
+(defvar *url-fured-portrait*
+  "https://cms.furcadia.com/fured/loadPortrait.php?pid=~D")
+
+(defun load-portrait (id cookie-jar)
+  (let* ((url (format nil *url-fured-portrait* id)))
+    (multiple-value-bind (response status headers uri stream closedp reason)
+        (drakma:http-request url :cookie-jar cookie-jar)
+      (declare (ignore headers uri stream closedp))
+      (unless (= 2 (truncate status 100))
+        (error "HTTP request unsuccessful (~D): ~A" status reason))
+      (let ((type (ecase (aref response 0) ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
+            (remappedp (ecase (aref response 1) (0 nil) (1 t)))
+            (data (make-array (- (length response) 2)
+                              :element-type (array-element-type response)
+                              :displaced-to response
+                              :displaced-index-offset 2)))
+        (values data type remappedp)))))

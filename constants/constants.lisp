@@ -65,6 +65,14 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
   '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 138 149 159 188 228 234 257)
   "Identifiers for digos which are capable of displaying wings.")
 
+(defvar *gradient-stops*
+  '(24 48 72 96 120 144 168 192)
+  "The gradient stops used for remapping.")
+
+(defvar *gradient-stops-hair*
+  '(24 48 72 96 192)
+  "The gradient stops used for remapping hair.")
+
 (defvar *kitterspeak*
   '((1 . :frame) (2 . :delay) (3 . :loop) (4 . :jump) (5 . :posx) (6 . :posy)
     (7 . :furre-x) (8 . :furre-y)
