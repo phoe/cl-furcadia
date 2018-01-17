@@ -14,6 +14,7 @@
                #:split-sequence
                #:drakma
                #:cl-furcadia.protocol
+               #:cl-furcadia.date-parser
                #:cl-furcadia.clos)
   :serial t
   :components ((:file "package")

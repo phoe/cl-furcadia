@@ -14,6 +14,7 @@
                #:cl-json
                #:cl-furcadia.constants
                #:cl-furcadia.protocol
+               #:cl-furcadia.news
                #:cl-furcadia.clos)
   :serial t
   :components ((:file "package")

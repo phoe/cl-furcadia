@@ -11,4 +11,5 @@
                #:cl-furcadia.constants)
   :serial t
   :components ((:file "package")
-               (:file "remap")))
+               (:file "remap")
+               (:file "legacy")))
