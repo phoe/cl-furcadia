@@ -13,6 +13,4 @@
    ;; functions
    #:color-code-gradient
    #:all-gradients
-   #:remap
-   #:*legacy-remaps* ;; TODO move to constants
-   ))
+   #:remap))

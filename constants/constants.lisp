@@ -50,6 +50,13 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
   (read-data-file :cl-furcadia.constants "data/classic-palette.lisp")
   "Furcadia classic palette in RGBA format.")
 
+(defvar *legacy-remaps*
+  (read-data-file :cl-furcadia.constants "data/legacy-remaps.lisp")
+  "Hashtable from legacy remap colors to legacy remap types. Keys are indices on
+the classic palette. Values are two-element lists in form of (KEYWORD INDEX),
+where KEYWORD is a legacy remap type and INDEX is an index on this color's
+brightness (0 is brightest).")
+
 ;;; Other variables
 
 (defvar *color-code-indices*
