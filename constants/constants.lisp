@@ -19,12 +19,19 @@
     "Indices of Furcadia wing types."))
 
 (deftype color ()
-  "A symbol denoting a Furcadia color type."
+  "A list of all symbols denoting Furcadia color types."
   '#.`(member ,@*color-types*))
 
 (deftype wings ()
-  "A symbol denoting a Furcadia wing type."
+  "A list of all symbols denoting Furcadia wing types."
   '#.`(member ,@*wings*))
+
+(defun wings-name (wings)
+  "Given a wing type, returns its proper name in form of a string."
+  (check-type wings wings)
+  (if (null wings)
+      "No Wings"
+      (cat (string-capitalize (string wings)) " Wings")))
 
 ;;; Data files
 
@@ -60,9 +67,11 @@ brightness (0 is brightest).")
 ;;; Other variables
 
 (defvar *legacy-remap-types*
-  '(:shadow :badge :boots :cape :eyes :vest :bracers :hair :markings :fur
-    :outline :trousers)
-  "Legacy remap types, valid as partial input to *LEGACY-REMAPS*.")
+  '((:badge . 1)  (:cape . 2) (:eyes . 3) (:markings . 4) (:vest . 6)
+    (:bracers . 9) (:trousers . 12) (:hair . 13) (:boots . 14) (:fur . 15)
+    (:outline . 255) (:shadow . :shadow))
+  "An alist containing a mapping from legacy remap types to modern remap
+codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
 
 (defvar *color-code-indices*
   '(:version :fur :markings :hair :eyes :badge :vest :bracers :cape
@@ -103,10 +112,3 @@ brightness (0 is brightest).")
 Rules 14+ seem to be unused in FOX1.")
 
 ;;; Utility functions
-
-(defun wings-name (wings)
-  "Given a wing type, returns its proper name in form of a string."
-  (check-type wings wings)
-  (if (null wings)
-      "No Wings"
-      (cat (string-capitalize (string wings)) " Wings")))

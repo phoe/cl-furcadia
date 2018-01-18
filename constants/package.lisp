@@ -10,8 +10,11 @@
    #:cl-furcadia/base
    #:cl-furcadia/protocol)
   (:export
-   #:color #:wings #:wings-name
-   #:*color-types*  #:*color-names* #:*color-values* #:*color-code-indices*
-   #:*gradients* #:*classic-palette* #:*kitterspeak*
-   #:*digos* #:*wings* #:*wingable-digos* #:*genders*
-   #:*legacy-remaps*))
+   ;; types
+   #:*color-types* #:*wings* #:color #:wings #:wings-name
+   ;; data files
+   #:*digos* #:*gradients* #:*color-names* #:*color-values* #:*classic-palette*
+   #:*legacy-remaps*
+   ;; variables
+   #:*legacy-remap-types* #:*color-code-indices* #:*genders* #:*wingable-digos*
+   #:*gradient-stops* #:*gradient-stops-hair* #:*kitterspeak*))

@@ -37,20 +37,50 @@ image data with all eligible pixels remapped."
          (result (make-array length :element-type '(unsigned-byte 8)
                                     :initial-contents image-data)))
     (loop for i from 0 below length by 4
-          for b = (aref result (+ i 3))
+          for b = (aref result (+ i 0))
           if (= b 0)
             do (setf (subseq result i (+ i 4))
                      (remap-argb (subseq result i (+ i 4)) gradients)))
     result))
 
-(defun remap-argb (sequence gradients)
-  (destructuring-bind (a r g b) (coerce sequence 'list)
-    (assert (= b 0))
-    (if (= g 255)
-        (list 255 0 0 0)
-        (let ((type (gethash g *color-values*)))
-          (unless type (error "No remap type ~D found." g))
-          (let* ((gradient (first (gethash type gradients)))
-                 (offset (* r 4))
-                 (color (subseq gradient offset (+ offset 4))))
-            (list a (aref color 0) (aref color 1) (aref color 2)))))))
+(defun remap-argb (vector gradients)
+  (destructuring-bind (b g r a) (coerce vector 'list)
+    (cond
+      ((/= b 0) (list b g r a))
+      ((= g 255) (list 0 0 0 255))
+      (t (let ((type (gethash g *color-values*)))
+           (unless type (error "No remap type ~D found." g))
+           (let* ((gradient (first (gethash type gradients)))
+                  (color (subseq gradient (* r 4) (+ (* r 4) 4))))
+             (list (aref color 2) (aref color 1) (aref color 0) a)))))))
+
+(defun 8bit-32bit (vector &optional remapp)
+  (let* ((length (array-total-size vector))
+         (result (make-array (* 4 length) :element-type '(unsigned-byte 8)))
+         (palette *classic-palette*))
+    (loop for i from 0 below length
+          for color = (aref vector i)
+          for remap = (gethash color *legacy-remaps*)
+          if (and remapp remap)
+            do (let ((g (assoc-value *legacy-remap-types* (first remap))))
+                 (if (eq g :shadow)
+                     (setf (subseq result (* 4 i) (+ 4 (* 4 i))) #(0 0 0 0))
+                     (setf (aref result (+ 0 (* 4 i))) ;; B
+                           0
+                           (aref result (+ 1 (* 4 i))) ;; G
+                           g
+                           (aref result (+ 2 (* 4 i))) ;; R
+                           (nth (- 7 (second remap)) *gradient-stops*)
+                           (aref result (+ 3 (* 4 i))) ;; A
+                           (aref palette (+ 3 (* 4 color))))))
+          else
+            unless (= color 0)
+              do (setf (aref result (+ 0 (* 4 i))) ;; B
+                       (aref palette (+ 2 (* 4 color)))
+                       (aref result (+ 1 (* 4 i))) ;; G
+                       (aref palette (+ 1 (* 4 color)))
+                       (aref result (+ 2 (* 4 i))) ;; R
+                       (aref palette (+ 0 (* 4 color)))
+                       (aref result (+ 3 (* 4 i))) ;; A
+                       (aref palette (+ 3 (* 4 color))))
+          finally (return result))))

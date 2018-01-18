@@ -7,10 +7,12 @@
   (:use
    #:cl
    #:alexandria
+   #:phoe-toolbox
    #:cl-furcadia/base
    #:cl-furcadia/constants)
   (:export
    ;; functions
    #:color-code-gradient
    #:all-gradients
-   #:remap))
+   #:remap
+   #:8bit-32bit))
