@@ -59,6 +59,11 @@ brightness (0 is brightest).")
 
 ;;; Other variables
 
+(defvar *legacy-remap-types*
+  '(:shadow :badge :boots :cape :eyes :vest :bracers :hair :markings :fur
+    :outline :trousers)
+  "Legacy remap types, valid as partial input to *LEGACY-REMAPS*.")
+
 (defvar *color-code-indices*
   '(:version :fur :markings :hair :eyes :badge :vest :bracers :cape
     :boots :trousers :wings :accent :gender :species :reserved)
