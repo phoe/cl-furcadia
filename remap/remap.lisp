@@ -40,47 +40,45 @@ image data with all eligible pixels remapped."
           for b = (aref result (+ i 0))
           if (= b 0)
             do (setf (subseq result i (+ i 4))
-                     (remap-argb (subseq result i (+ i 4)) gradients)))
+                     (remap-pixel (subseq result i (+ i 4)) gradients)))
     result))
 
-(defun remap-argb (vector gradients)
-  (destructuring-bind (b g r a) (coerce vector 'list)
+(defun remap-pixel (pixel gradients)
+  "Remaps the provided pixel using the provided gradients. GRADIENTS should be
+a hashtable in the same format as valid output from ALL-GRADIENTS."
+  (declare (optimize speed))
+  (destructuring-bind (b g r a) (coerce pixel 'list)
+    (declare (type (unsigned-byte 8) b g r a))
     (cond
-      ((/= b 0) (list b g r a))
-      ((= g 255) (list 0 0 0 255))
+      ((/= b 0) pixel)
+      ((= g 255) #(0 0 0 255))
       (t (let ((type (gethash g *color-values*)))
            (unless type (error "No remap type ~D found." g))
-           (let* ((gradient (first (gethash type gradients)))
-                  (color (subseq gradient (* r 4) (+ (* r 4) 4))))
-             (list (aref color 2) (aref color 1) (aref color 0) a)))))))
+           (let* ((gradient (first (gethash type gradients))))
+             (declare (type (vector t) gradient))
+             (let ((color (subseq gradient (* r 4) (+ (* r 4) 4))))
+               `#(,(aref color 2) ,(aref color 1) ,(aref color 0) ,a))))))))
 
 (defun 8bit-32bit (vector &optional remapp)
+  "Converts the provided image data from 8-bit to 32-bit. If REMAPP is true, the
+resulting image will be remappable."
   (let* ((length (array-total-size vector))
          (result (make-array (* 4 length) :element-type '(unsigned-byte 8)))
          (palette *classic-palette*))
-    (loop for i from 0 below length
-          for color = (aref vector i)
-          for remap = (gethash color *legacy-remaps*)
-          if (and remapp remap)
-            do (let ((g (assoc-value *legacy-remap-types* (first remap))))
-                 (if (eq g :shadow)
-                     (setf (subseq result (* 4 i) (+ 4 (* 4 i))) #(0 0 0 0))
-                     (setf (aref result (+ 0 (* 4 i))) ;; B
-                           0
-                           (aref result (+ 1 (* 4 i))) ;; G
-                           g
-                           (aref result (+ 2 (* 4 i))) ;; R
-                           (nth (- 7 (second remap)) *gradient-stops*)
-                           (aref result (+ 3 (* 4 i))) ;; A
-                           (aref palette (+ 3 (* 4 color))))))
-          else
-            unless (= color 0)
-              do (setf (aref result (+ 0 (* 4 i))) ;; B
-                       (aref palette (+ 2 (* 4 color)))
-                       (aref result (+ 1 (* 4 i))) ;; G
-                       (aref palette (+ 1 (* 4 color)))
-                       (aref result (+ 2 (* 4 i))) ;; R
-                       (aref palette (+ 0 (* 4 color)))
-                       (aref result (+ 3 (* 4 i))) ;; A
-                       (aref palette (+ 3 (* 4 color))))
-          finally (return result))))
+    (labels ((pref (c i) (aref palette (+ i (* 4 c)))))
+      (loop for i from 0 below length
+            for color = (aref vector i)
+            for (keyword index) = (gethash color *legacy-remaps*)
+            if (and remapp keyword index)
+              do (let ((g (assoc-value *legacy-remap-types* keyword)))
+                   (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
+                         (if (eq g :shadow)
+                             #(0 0 0 0)
+                             `#(0 ,g ,(nth (- 7 index) *gradient-stops*) 255))))
+            else
+              do (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
+                       (if (= color 0)
+                           #(0 0 0 0)
+                           `#(,(let ((b (pref color 2))) (if (= 0 b) 1 b))
+                              ,(pref color 1) ,(pref color 0) ,(pref color 3))))
+            finally (return result)))))
