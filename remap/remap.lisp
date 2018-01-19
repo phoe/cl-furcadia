@@ -31,19 +31,24 @@ resulting image will be remappable."
 
 (defun remap (image-data color-code)
   "Provided an ARGB image data and a color code, returns a fresh copy of the
-image data with all eligible pixels remapped."
+image data with all eligible pixels remapped. The second value returns all
+unknown remaps codes that were encountered."
   (check-type image-data vector)
   (check-type color-code (or null string))
   (let* ((gradients (all-gradients color-code))
          (length (length image-data))
          (result (make-array length :element-type '(unsigned-byte 8)
-                                    :initial-contents image-data)))
+                                    :initial-contents image-data))
+         (missing-remaps '()))
     (loop for i from 0 below length by 4
           for b = (aref result (+ i 0))
-          if (= b 0)
-            do (setf (subseq result i (+ i 4))
+          for g = (aref result (+ i 1))
+          if (and (= b 0) (/= g 0))
+            do (when (and (/= g 255) (not (nth-value 1 (gethash g gradients))))
+                 (pushnew g missing-remaps))
+               (setf (subseq result i (+ i 4))
                      (remap-pixel (subseq result i (+ i 4)) gradients)))
-    result))
+    (values result missing-remaps)))
 
 (defun remap-pixel (pixel gradients)
   "Remaps the provided pixel using the provided gradients. GRADIENTS should be
@@ -53,11 +58,8 @@ a hashtable in the same format as valid output from ALL-GRADIENTS."
     (declare (type (unsigned-byte 8) b g r a))
     (cond
       ((/= b 0) pixel)
-      ((= g 0) pixel)
       ((= g 255) #(0 0 0 255))
-      ((not (nth-value 1 (gethash g gradients)))
-       (warn "Unknown remap type ~D found." g) ;; TODO warn only once
-       pixel)
+      ((not (nth-value 1 (gethash g gradients))) pixel)
       (t (let ((gradient (gethash g gradients)))
            (declare (type (vector t) gradient))
            (let ((color (subseq gradient (* r 4) (+ (* r 4) 4))))
@@ -74,6 +76,7 @@ a hashtable in the same format as valid output from ALL-GRADIENTS."
          (gradient (gethash (list type name) *gradients*)))
     gradient))
 
+;;; TODO this needs to be optimized like holy hell, make it use octet-vectors
 (defun all-gradients (color-code)
   "Provided a color code, returns a fresh hash-table containing a map between
 all valid color indices and their respective gradients."
@@ -91,19 +94,19 @@ gradients to that hash-table."
   (mapc (curry #'apply #'add-blends hash-table) *gradient-blends*))
 
 (defun add-blends (hash-table start count color-1 color-2)
-  (let ((iota (iota count)))
-    (mapcar (lambda (i) (add-blend hash-table start i color-1 color-2)) iota)))
-
-(defun add-blend (hash-table start position color-1 color-2)
-  (let* ((index-1 (assoc-value *color-values* color-1))
-         (index-2 (assoc-value *color-values* color-2))
-         (slide-1 (gethash index-1 hash-table))
-         (slide-2 (gethash index-2 hash-table))
-         (blend (make-array (length slide-1) :element-type t)) ;; TODO ubyte8
-         (factor (/ (1+ position) 6)))
-    (loop for i from 0
-          for x across slide-1
-          for y across slide-2
-          for lerp = (round (lerp factor x y))
-          do (setf (aref blend i) lerp)
-          finally (setf (gethash (+ start position) hash-table) blend))))
+  "Provided a hash-table with already defined base gradients, a start index, a
+count of how many blends to add, and two color types to blend between, adds the
+respective blends to the hash-table."
+  (dolist (position (iota count))
+    (let* ((index-1 (assoc-value *color-values* color-1))
+           (index-2 (assoc-value *color-values* color-2))
+           (slide-1 (gethash index-1 hash-table))
+           (slide-2 (gethash index-2 hash-table))
+           (blend (make-array (length slide-1) :element-type t)) ;; TODO ubyte8
+           (factor (/ (1+ position) 6)))
+      (loop for i from 0
+            for x across slide-1
+            for y across slide-2
+            for lerp = (round (lerp factor x y))
+            do (setf (aref blend i) lerp)
+            finally (setf (gethash (+ start position) hash-table) blend)))))
