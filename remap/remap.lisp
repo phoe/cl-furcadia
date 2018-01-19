@@ -95,7 +95,7 @@ a hashtable in the same format as valid output from ALL-GRADIENTS."
         (r (aref pixel 2)) (a (aref pixel 3)))
     (declare (type (unsigned-byte 8) b g r a))
     (cond ((/= b 0) pixel)
-          ((= g 255) *x000000ff*)
+          ((= g 255) #.*x000000ff*)
           ((not (nth-value 1 (gethash g gradients))) pixel)
           (t (let ((gradient (gethash g gradients))
                    (result (make-array 4 :element-type '(unsigned-byte 8))))
