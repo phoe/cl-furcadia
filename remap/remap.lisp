@@ -6,12 +6,10 @@
 (in-package #:cl-furcadia/remap)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defvar *x000000ff*
-    #.(make-array 4 :element-type '(unsigned-byte 8)
-                    :initial-contents '(0 0 0 255)))
-  (defvar *x00000000*
-    #.(make-array 4 :element-type '(unsigned-byte 8)
-                    :initial-contents '(0 0 0 0))))
+  (defvar *x000000ff* #.(make-array 4 :element-type '(unsigned-byte 8)
+                                      :initial-contents '(0 0 0 255)))
+  (defvar *x00000000* #.(make-array 4 :element-type '(unsigned-byte 8)
+                                      :initial-contents '(0 0 0 0))))
 
 (defun 8bit-32bit (vector &optional remapp)
   "Converts the provided image data from 8-bit to 32-bit. If REMAPP is true, the
@@ -25,6 +23,7 @@ resulting image will be remappable."
                                 :initial-contents '(0 0 0 255))))
     (declare (type (simple-array (unsigned-byte 8) (*)) palette))
     (labels ((pref (c i) (aref palette (+ i (* 4 c))))
+             (npref (c i) (let ((b (pref c i))) (if (= 0 b) 1 b)))
              (arr (a b c d) (setf (aref scratch 0) a (aref scratch 1) b
                                   (aref scratch 2) c (aref scratch 3) d)
                scratch))
@@ -38,14 +37,14 @@ resulting image will be remappable."
               do (let ((g (assoc-value *legacy-remap-types* keyword)))
                    (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
                          (if (eq g :shadow)
-                             #.*x00000000* ;; TODO optimize this thing below
+                             #.*x00000000*
                              (arr 0 g (nth (- 7 index) *gradient-stops*) 255))))
             else
               do (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
                        (if (= color 0)
                            #.*x00000000*
-                           (arr (let ((b (pref color 2))) (if (= 0 b) 1 b))
-                                (pref color 1) (pref color 0) (pref color 3))))
+                           (arr (npref color 2) (pref color 1)
+                                (pref color 0) (pref color 3))))
             finally (return result)))))
 
 (defun remap-all (color-code &rest image-datas)
