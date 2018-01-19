@@ -101,8 +101,8 @@ codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
   "The gradient stops used for remapping hair.")
 
 (defvar *gradient-blends*
-  '((16 5 :fur :markings) (21 5 :fur :hair) (26 5 :fur :wings)
-    (31 5 :markings :hair) (36 5 :markings :wings) (41 5 :hair :wings))
+  '((16 :fur :markings) (21 :fur :hair) (26 :fur :wings)
+    (31 :markings :hair) (36 :markings :wings) (41 :hair :wings))
   "All blends defined in the FOX5 specification, in form of (STARTING-SLIDE
 COUNT COLOR-1 COLOR-2).")
 

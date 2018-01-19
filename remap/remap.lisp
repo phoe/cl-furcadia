@@ -109,29 +109,37 @@ all valid color indices and their respective gradients."
 gradients to that hash-table."
   (mapc (curry #'apply #'add-blends hash-table) *gradient-blends*))
 
-(defun add-blends (hash-table start count color-1 color-2)
+(defun add-blends (hash-table start color-1 color-2)
   "Provided a hash-table with already defined base gradients, a start index, a
 count of how many blends to add, and two color types to blend between, adds the
 respective blends to the hash-table."
   (declare (optimize speed)
            (type symbol color-1 color-2)
            (type (unsigned-byte 8) start))
-  (loop with iota = (loop for i of-type (unsigned-byte 3) below count collect i)
-        for position of-type (unsigned-byte 3) in iota
-        do (let ((index-1 (assoc-value *color-values* color-1))
-                 (index-2 (assoc-value *color-values* color-2)))
-             (declare (type (unsigned-byte 8) index-1 index-2))
-             (let* ((slide-1 (gethash index-1 hash-table))
-                    (slide-2 (gethash index-2 hash-table))
-                    (length (length slide-1))
-                    (blend (make-array length :element-type '(unsigned-byte 8)))
-                    (factor (float (* (1+ position) (/ 6.0)))))
-               (declare (type (simple-array (unsigned-byte 8) (*))
-                              slide-1 slide-2))
-               (loop for i from 0 below length
-                     for x = (aref slide-1 i)
-                     for y = (aref slide-2 i)
-                     for lerp = (round (lerp factor x y))
+  (let ((index-1 (assoc-value *color-values* color-1))
+        (index-2 (assoc-value *color-values* color-2)))
+    (declare (type (unsigned-byte 8) index-1 index-2))
+    (let ((slide-1 (gethash index-1 hash-table))
+          (slide-2 (gethash index-2 hash-table)))
+      (declare (type (simple-array (unsigned-byte 8) (*)) slide-1 slide-2))
+      (loop with step = #.(float 1/6)
+            for position below 5
+            for factor of-type single-float = step then (+ factor step)
+            for blend = (make-array 1024 :element-type '(unsigned-byte 8))
+            do (loop for i from 0 below 1024
+                     for x of-type (unsigned-byte 8) = (aref slide-1 i)
+                     for y of-type (unsigned-byte 8) = (aref slide-2 i)
+                     for lerp = (round (the (single-float 0.0 255.0)
+                                            (lerp factor x y)))
                      do (setf (aref blend i) lerp)
                      finally (setf (gethash (+ start position) hash-table)
                                    blend))))))
+
+#|
+18:29 < stassats> and index-1 and index-2 is ub8, why aren't you using an
+255-element vector instead of a hash-table?
+18:31 < stassats> or a (255 1024) array
+18:31 < stassats> or a (* 255 1024) vector (vectors are faster than md arrays)
+18:41 < stassats> but hash-table access and array creation will dominate, so
+focus on making it one big array
+|#
