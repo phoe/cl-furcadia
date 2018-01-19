@@ -8,6 +8,7 @@
    #:cl
    #:alexandria
    #:phoe-toolbox
+   #:trivial-download
    #:cl-furcadia/constants
    #:cl-furcadia/protocol
    #:cl-furcadia/clos
@@ -17,4 +18,7 @@
    #:login
    #:fetch-account
    #:fetch-furre
-   #:save-furre))
+   #:save-furre
+   #:ensure-digo
+   #:update-digo-data
+   #:download-official-fox))

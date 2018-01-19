@@ -12,6 +12,7 @@
                #:drakma
                #:parse-js
                #:cl-json
+               #:trivial-download
                #:cl-furcadia.constants
                #:cl-furcadia.protocol
                #:cl-furcadia.news

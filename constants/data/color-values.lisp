@@ -1,5 +1,5 @@
 #.(ALEXANDRIA:ALIST-HASH-TABLE
-   '((255 . :OUTLINE) (15 . :FUR) (14 . :BOOTS) (13 . :HAIR) (12 . :TROUSERS)
-     (10 . :WINGS) (9 . :BRACERS) (7 . :ACCENT) (6 . :VEST) (4 . :MARKINGS)
-     (3 . :EYES) (2 . :CAPE) (1 . :BADGE))
-   :TEST 'EQL)
+'((:OUTLINE . 255) (:FUR . 15) (:BOOTS . 14) (:HAIR . 13) (:TROUSERS . 12)
+  (:WINGS . 10) (:BRACERS . 9) (:ACCENT . 7) (:VEST . 6) (:MARKINGS . 4)
+  (:EYES . 3) (:CAPE . 2) (:BADGE . 1))
+  :TEST 'EQL)

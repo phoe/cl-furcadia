@@ -49,10 +49,6 @@ where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
   (read-data-file :cl-furcadia.constants "data/color-names.lisp")
   "Hash-table containing color names. Keys are symbols from *COLOR-TYPES*.")
 
-(defvar *color-values*
-  (read-data-file :cl-furcadia.constants "data/color-values.lisp")
-  "Hash table between integers and their respective remap types.")
-
 (defvar *classic-palette*
   (read-data-file :cl-furcadia.constants "data/classic-palette.lisp")
   "Furcadia classic palette in RGBA format.")
@@ -65,6 +61,12 @@ where KEYWORD is a legacy remap type and INDEX is an index on this color's
 brightness (0 is brightest).")
 
 ;;; Other variables
+
+(defvar *color-values*
+  '((:badge . 1) (:cape . 2) (:eyes . 3) (:markings . 4) (:vest . 6) (:accent . 7)
+    (:bracers . 9) (:wings . 10) (:trousers . 12) (:hair . 13) (:boots . 14)
+    (:fur . 15) (:outline . 255))
+  "Alist between remap types and their respective integers")
 
 (defvar *legacy-remap-types*
   '((:badge . 1)  (:cape . 2) (:eyes . 3) (:markings . 4) (:vest . 6)
@@ -94,6 +96,12 @@ codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
   '(24 48 72 96 192)
   "The gradient stops used for remapping hair.")
 
+(defvar *gradient-blends*
+  '((16 5 :fur :markings) (21 5 :fur :hair) (26 5 :fur :wings)
+    (31 5 :markings :hair) (36 5 :markings :wings) (41 5 :hair :wings))
+  "All blends defined in the FOX5 specification, in form of (STARTING-SLIDE
+COUNT COLOR-1 COLOR-2).")
+
 (defvar *kitterspeak*
   '((1 . :frame) (2 . :delay) (3 . :loop) (4 . :jump) (5 . :posx) (6 . :posy)
     (7 . :furre-x) (8 . :furre-y)
@@ -110,5 +118,3 @@ codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
   "The alist of Kitterspeak step/rule codes and their names.
 \
 Rules 14+ seem to be unused in FOX1.")
-
-;;; Utility functions

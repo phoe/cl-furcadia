@@ -52,18 +52,8 @@ Returns the list of digo indices whose version was updated."
             unless (eql version old-version)
               collect index))))
 
-(defun download-file (url pathname)
-  (check-type url string)
-  (check-type pathname pathname)
-  (ensure-directories-exist pathname)
-  (with-output-to-binary (file pathname :if-does-not-exist :create)
-    (multiple-value-bind (input status headers uri stream closedp reason)
-        (drakma:http-request url :want-stream t)
-      (declare (ignore headers uri stream closedp))
-      (unless (= 2 (truncate status 100))
-        (error "HTTP request unsuccessful (~D): ~A" status reason))
-      (unwind-protect
-           (loop for x = (read-byte input nil nil)
-                 while x do (write-byte x file))
-        (close input))
-      pathname)))
+(defun download-official-fox (id pathname)
+  "Downloads an official FOX5 file with the given ID from the Furcadia Web
+Services."
+  (let ((url (format nil *fox-download-url* id)))
+    (trivial-download:download url pathname :quiet t)))
