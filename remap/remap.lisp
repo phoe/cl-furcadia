@@ -118,7 +118,6 @@ a hashtable in the same format as valid output from ALL-GRADIENTS."
          (gradient (gethash (list type name) *gradients*)))
     gradient))
 
-;;; TODO this needs to be optimized like holy hell, make it use octet-vectors
 (defun all-gradients (color-code)
   "Provided a color code, returns a fresh hash-table containing a map between
 all valid color indices and their respective gradients."
