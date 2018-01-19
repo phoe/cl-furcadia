@@ -14,5 +14,5 @@
    ;; functions
    #:color-code-gradient
    #:all-gradients
-   #:remap
+   #:remap #:remap-all
    #:8bit-32bit))

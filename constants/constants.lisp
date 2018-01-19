@@ -45,6 +45,10 @@ are instances of CL-FURCADIA/CLOS:DIGO class.")
   "Hash-table containing gradient data. The keys are in form (SYMBOL STRING),
 where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
 
+(maphash (lambda (key value) (declare (ignore value))
+           (coercef (gethash key *gradients*) '(vector (unsigned-byte 8))))
+         *gradients*)
+
 (defvar *color-names*
   (read-data-file :cl-furcadia.constants "data/color-names.lisp")
   "Hash-table containing color names. Keys are symbols from *COLOR-TYPES*.")

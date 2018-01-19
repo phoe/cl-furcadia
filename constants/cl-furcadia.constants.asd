@@ -8,6 +8,7 @@
   :author "Michał \"phoe\" Herda <phoe@openmailbox.org>"
   :license "BSD 3-clause"
   :depends-on (#:phoe-toolbox
+               #:alexandria
                #:cl-furcadia.base
                #:cl-furcadia.protocol
                #:cl-furcadia.clos)

@@ -7,6 +7,7 @@
   (:use
    #:cl
    #:phoe-toolbox
+   #:alexandria
    #:cl-furcadia/base
    #:cl-furcadia/protocol)
   (:export
