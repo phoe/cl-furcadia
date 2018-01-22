@@ -21,11 +21,13 @@ resulting image will be remappable."
          (palette *classic-palette*)
          (scratch (make-array 4 :element-type '(unsigned-byte 8)
                                 :initial-contents '(0 0 0 255))))
-    (declare (type (simple-array (unsigned-byte 8) (*)) palette))
+    (declare (type (simple-array (unsigned-byte 8) (*)) palette)
+             (dynamic-extent scratch))
     (labels ((pref (c i) (aref palette (+ i (* 4 c))))
              (npref (c i) (let ((b (pref c i))) (if (= 0 b) 1 b)))
-             (arr (a b c d) (setf (aref scratch 0) a (aref scratch 1) b
-                                  (aref scratch 2) c (aref scratch 3) d)
+             (arr (a b c d)
+               (setf (aref scratch 0) a (aref scratch 1) b
+                     (aref scratch 2) c (aref scratch 3) d)
                scratch))
       (declare (inline arr pref))
       (loop for i of-type (unsigned-byte 24) from 0 below length
@@ -33,18 +35,16 @@ resulting image will be remappable."
             for value = (gethash color *legacy-remaps*)
             for keyword = (first value)
             for index of-type (unsigned-byte 3) = (second value)
-            if (and remapp keyword index)
-              do (let ((g (assoc-value *legacy-remap-types* keyword)))
-                   (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
-                         (if (eq g :shadow)
+            do (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
+                     (if (and remapp keyword index)
+                         (let ((g (assoc-value *legacy-remap-types* keyword)))
+                           (if (eq g :shadow)
+                               #.*x00000000*
+                               (arr 0 g (nth (- 7 index) *gradient-stops*) 255)))
+                         (if (= color 0)
                              #.*x00000000*
-                             (arr 0 g (nth (- 7 index) *gradient-stops*) 255))))
-            else
-              do (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
-                       (if (= color 0)
-                           #.*x00000000*
-                           (arr (npref color 2) (pref color 1)
-                                (pref color 0) (pref color 3))))
+                             (arr (npref color 2) (pref color 1)
+                                  (pref color 0) (pref color 3)))))
             finally (return result)))))
 
 (defun remap-all (color-code &rest image-datas)
