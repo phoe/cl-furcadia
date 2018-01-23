@@ -37,13 +37,12 @@ resulting image will be remappable."
                 (subseq result (* 4 i) (+ 4 (* 4 i)))
                 (cond
                   ((and remapp value)
-                   (let* ((keyword (first value))
-                          (index (second value))
-                          (g (assoc-value *legacy-remap-types* keyword)))
+                   (destructuring-bind (keyword index) value
                      (declare (type (unsigned-byte 3) index))
-                     (if (eq g :shadow)
-                         #.*x00000000*
-                         (arr 0 g (nth (- 7 index) *gradient-stops*) 255))))
+                     (let ((g (assoc-value *legacy-remap-types* keyword)))
+                       (if (eq g :shadow)
+                           #.*x00000000*
+                           (arr 0 g (nth (- 7 index) *gradient-stops*) 255)))))
                   ((= color 0) #.*x00000000*)
                   (t (arr (npref color 2) (pref color 1)
                           (pref color 0) (pref color 3)))))
