@@ -33,18 +33,20 @@ resulting image will be remappable."
       (loop for i of-type (unsigned-byte 24) from 0 below length
             for color = (aref vector i)
             for value = (gethash color *legacy-remaps*)
-            for keyword = (first value)
-            for index of-type (unsigned-byte 3) = (second value)
-            do (setf (subseq result (* 4 i) (+ 4 (* 4 i)))
-                     (if (and remapp keyword index)
-                         (let ((g (assoc-value *legacy-remap-types* keyword)))
-                           (if (eq g :shadow)
-                               #.*x00000000*
-                               (arr 0 g (nth (- 7 index) *gradient-stops*) 255)))
-                         (if (= color 0)
-                             #.*x00000000*
-                             (arr (npref color 2) (pref color 1)
-                                  (pref color 0) (pref color 3)))))
+            do (setf
+                (subseq result (* 4 i) (+ 4 (* 4 i)))
+                (cond
+                  ((and remapp value)
+                   (let* ((keyword (first value))
+                          (index (second value))
+                          (g (assoc-value *legacy-remap-types* keyword)))
+                     (declare (type (unsigned-byte 3) index))
+                     (if (eq g :shadow)
+                         #.*x00000000*
+                         (arr 0 g (nth (- 7 index) *gradient-stops*) 255))))
+                  ((= color 0) #.*x00000000*)
+                  (t (arr (npref color 2) (pref color 1)
+                          (pref color 0) (pref color 3)))))
             finally (return result)))))
 
 (defun remap-all (color-code &rest image-datas)
