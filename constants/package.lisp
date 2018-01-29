@@ -18,4 +18,4 @@
    ;; variables
    #:*color-values* #:*legacy-remap-types* #:*color-code-indices* #:*genders*
    #:*wingable-digos* #:*gradient-stops* #:*gradient-stops-hair*
-   #:*gradient-blends* #:*kitterspeak*))
+   #:*gradient-blends* #:*kitterspeak* #:*file-generators*))

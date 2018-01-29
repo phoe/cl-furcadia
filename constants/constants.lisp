@@ -66,6 +66,11 @@ brightness (0 is brightest).")
 
 ;;; Other variables
 
+(defvar *file-generators*
+  '((0 . nil) (1 . :fured) (2 . :uploader) (3 . :haxe-client)
+    (4 . :html-client) (5 . :php) (72 . :apple) (200 . :raptor-fox5))
+  "A list of all known FOX5 file generators.")
+
 (defvar *color-values*
   '((:badge . 1) (:cape . 2) (:eyes . 3) (:markings . 4) (:vest . 6) (:accent . 7)
     (:bracers . 9) (:wings . 10) (:trousers . 12) (:hair . 13) (:boots . 14)
