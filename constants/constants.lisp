@@ -111,7 +111,7 @@ codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
   "All blends defined in the FOX5 specification, in form of (STARTING-SLIDE
 COUNT COLOR-1 COLOR-2).")
 
-(defparameter *kitterspeak*
+(defvar *kitterspeak*
   '((1 . :show-frame) (2 . :delay) (3 . :loop) (4 . :jump) (5 . :posx) (6 . :posy)
     (7 . :furre-x) (8 . :furre-y)
     (9 . :draw-front) ;; legacy
