@@ -112,18 +112,20 @@ codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
 COUNT COLOR-1 COLOR-2).")
 
 (defvar *kitterspeak*
-  '((1 . :show-frame) (2 . :delay) (3 . :loop) (4 . :jump) (5 . :posx) (6 . :posy)
-    (7 . :furre-x) (8 . :furre-y)
+  '((1 . :show-frame) (2 . :delay) (3 . :loop) (4 . :jump) (5 . :frame-x)
+    (6 . :frame-y) (7 . :furre-x) (8 . :furre-y)
     (9 . :draw-front) ;; legacy
     (10 . :draw-behind) ;; legacy
-    (11 . :auto-frame-delay) (12 . :stop) (13 . :camera-state)
-    (14 . :rand-frame-delay) (15 . :shape-frame)
+    (11 . :auto-frame-delay) (12 . :stop) (13 . :camera-follow-furre-p)
+    (14 . :random-frame-auto-delay) (15 . :random-frame-delay)
     (16 . :shape-frame) ;; obsolete
-    (17 . :opacity) (18 . :slide-posx) (19 . :slide-posy) (20 . :slide-furrex)
-    (21 . :slide-furrey) (22 . :slide-opacity) (23 . :show-bg-frame)
-    (24 . :show-fg-frame) (25 . :show-bg-object) (26 . :show-fg-object)
-    (27 . :hide-bg) (28 . :hide-fg) (29 . :show-behind-frame)
-    (30 . :show-front-frame) (31 . :move-forward) (32 . :move-backward))
+    (17 . :opacity) (18 . :slide-frame-x) (19 . :slide-frame-y)
+    (20 . :slide-furre-x) (21 . :slide-furre-y) (22 . :slide-opacity)
+    (23 . :show-bg-frame) (24 . :show-fg-frame) (25 . :show-bg-object)
+    (26 . :show-fg-object) (27 . :hide-bg) (28 . :hide-fg)
+    (29 . :show-behind-frame) (30 . :show-front-frame) (31 . :move-forward)
+    (32 . :move-backward)
+    (33 . :effect-layer-mode))
   "The alist of Kitterspeak step/rule codes and their names.
 \
 Rules 14+ seem to be unused in FOX1.")
