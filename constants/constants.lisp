@@ -113,9 +113,9 @@ COUNT COLOR-1 COLOR-2).")
 
 (defvar *kitterspeak*
   '((2 . :delay) (3 . :loop) (4 . :jump) (5 . :frame-x) (6 . :frame-y)
-    (7 . :furre-x) (8 . :furre-y) (11 . :auto-frame-delay) (12 . :stop)
-    (13 . :camera-follow-furre-p) (14 . :random-frame-auto-delay)
-    (15 . :random-frame-delay) (17 . :opacity) (18 . :slide-frame-x)
+    (7 . :furre-x) (8 . :furre-y) (11 . :auto-delay) (12 . :stop)
+    (13 . :camera-follow-furre-p) (14 . :random-auto-delay)
+    (15 . :random-delay) (17 . :opacity) (18 . :slide-frame-x)
     (19 . :slide-frame-y) (20 . :slide-furre-x) (21 . :slide-furre-y)
     (22 . :slide-opacity) (23 . :show-bg-frame) (24 . :show-fg-frame)
     (29 . :show-behind-frame) (30 . :show-front-frame) (31 . :move-forward)
