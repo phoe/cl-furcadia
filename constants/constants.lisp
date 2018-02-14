@@ -131,3 +131,7 @@ Rules 14+ seem to be unused in FOX1.
 Rules 1, 9, 10 are legacy and their usage in new Kitterspeak lines is
 discouraged.
 Rules 16, 25, 26, 27, 28 are deprecated and not meant to be used.")
+
+(defvar *desc-standards*
+  '((100 . :e) (200 . :t+) (300 . :m16+) (400 . :a18+) (500 . :ao) (600 . :aoc))
+  "Al alist of age standards available for Furcadia descriptions.")

@@ -48,6 +48,18 @@ resulting image will be remappable."
                           (pref color 0) (pref color 3)))))
             finally (return result)))))
 
+(defun 24bit-32bit (vector)
+  "Converts the provided image data from 24-bit to 32-bit by inserting 255 alpha
+for each pixel."
+  (let* ((new-length (* 4/3 (length vector)))
+         (result (make-array new-length :element-type '(unsigned-byte 8)
+                                        :initial-element 255)))
+    (loop for i from 0 below (length vector) by 3
+          for j from 0 below (length result) by 4
+          do (setf (subseq result j (+ 3 j))
+                   (subseq vector i (+ 3 i)))
+          finally (return result))))
+
 (defun remap-all (color-code &rest image-datas)
   "Provided an ARGB image data and a color code, returns a fresh copy of the
 image data with all eligible pixels remapped. The second value returns all

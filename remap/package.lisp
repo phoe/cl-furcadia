@@ -15,4 +15,4 @@
    #:color-code-gradient
    #:all-gradients
    #:remap #:remap-all
-   #:8bit-32bit))
+   #:8bit-32bit #:24bit-32bit))

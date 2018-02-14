@@ -96,8 +96,7 @@ web services."
                                    :cookie-jar cookie-jar)))
     (decode-json (make-string-input-stream page))))
 
-;;; TODO do thorough testing for all availeble attributes
-(defparameter *furre-json-keywords*
+(defparameter *json-furre-keywords*
   `((:name name ,(lambda (x) (substitute #\Space #\| x)))
     (:uid uid parse-integer)
     (:desc description)
@@ -129,7 +128,7 @@ web services."
 (defun json-furre (json)
   (loop with instance = (make-instance 'standard-furre)
         for (keyword . value) in json
-        for entry = (assoc keyword *furre-json-keywords*)
+        for entry = (assoc keyword *json-furre-keywords*)
         if (and (null entry) (not (member keyword *json-furre-ignored-keywords*)))
           collect (cons keyword value) into unknowns
         else unless (member keyword *json-furre-ignored-keywords*) do
@@ -153,7 +152,7 @@ using the provided cookie jar."
 (defun furre-json (furre account)
   (let* ((session (session account))
          (furre-data
-           (loop for (keyword fn) in *furre-json-keywords*
+           (loop for (keyword fn) in *json-furre-keywords*
                  for keystring = (string-downcase (princ-to-string keyword))
                  for value = (princ-to-string (or (funcall fn furre) ""))
                  unless (string= value "")
@@ -207,3 +206,39 @@ unsuccessful."
                               :displaced-to response
                               :displaced-index-offset 2)))
         (values data type remappedp)))))
+
+;; Load costume
+
+(defvar *url-fured-costume*
+  "https://cms.furcadia.com/fured/loadCostume.php?cid=~D")
+
+(defun http-get-costume (cid cookie-jar)
+  (let* ((url (format nil *url-fured-costume* cid))
+         (response (drakma:http-request url :cookie-jar cookie-jar)))
+    (decode-json (make-string-input-stream response))))
+
+(defparameter *json-costume-keywords*
+  `((:cid)
+    (:ord)
+    (:desc description)
+    (:colr color-code)
+    (:digo digo)
+    (:port portrait parse-integer)
+    (:scal)
+    (:glom)
+    (:tag tag parse-integer)
+    (:strd)
+    (:name)
+    (:atime afk-time parse-integer)
+    (:amaxtime afk-max-time parse-integer)
+    (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
+    (:adigo afk-digo)
+    (:awhsp afk-whisper)
+    (:aport afk-portrait parse-integer)
+    (:wing wings)
+    (:awing afk-wings)
+    (:adesc afk-description)
+    (:acolr afk-color-code)))
+
+(defparameter *json-costume-ignored-keywords*
+  '(:state))
