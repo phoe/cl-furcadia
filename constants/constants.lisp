@@ -121,7 +121,7 @@ COUNT COLOR-1 COLOR-2).")
     (29 . :show-behind-frame) (30 . :show-front-frame) (31 . :move-forward)
     (32 . :move-backward) (33 . :effect-layer-mode)
     ;; legacy
-    (1 . :show-frame) (9 . :draw-front) (10 . :draw-behind)
+    (1 . :show-frame) (9 . :move-to-front) (10 . :move-behind)
     ;; deprecated
     (16 . :shape-frame) (25 . :show-bg-object) (26 . :show-fg-object)
     (27 . :hide-bg) (28 . :hide-fg))
