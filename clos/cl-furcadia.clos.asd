@@ -14,6 +14,7 @@
   :serial t
   :components ((:file "package")
                (:file "standard-digo")
+               (:file "standard-costume")
                (:file "standard-furre")
                (:file "standard-account")
                (:file "standard-news")))

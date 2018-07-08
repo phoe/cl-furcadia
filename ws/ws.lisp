@@ -96,54 +96,54 @@ web services."
                                    :cookie-jar cookie-jar)))
     (decode-json (make-string-input-stream page))))
 
+(defun parse-costume-forms (forms)
+  (mapcar (lambda (x) (list (parse-integer (symbol-name (car x)))
+                            (parse-integer (cadr x))
+                            (caddr x)))
+          forms))
+
 (defparameter *json-furre-keywords*
   `((:name name ,(lambda (x) (substitute #\Space #\| x)))
     (:uid uid parse-integer)
-    (:desc description)
-    (:colr color-code)
-    (:digo digo)
-    (:wing wings)
-    (:port portrait parse-integer)
-    (:tag tag parse-integer)
-    (:aresp auto-response)
-    (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
-    (:adesc afk-description)
-    (:awhsp afk-whisper)
-    (:acolr afk-color-code)
-    (:adigo afk-digo)
-    (:awing afk-wings)
-    (:aport afk-portrait parse-integer)
-    (:atime afk-time parse-integer)
-    (:amaxtime afk-max-time parse-integer)
     (:digos digos)
     (:lifers lifers)
     (:ports portraits)
     (:specitags specitags)
     (:specitag-remap specitag-remap)
-    (:costumes costumes ,(lambda (costume-form)
-                           (mapcar (lambda (x)
-                                     (list (parse-integer (symbol-name (car x)))
-                                           (parse-integer (cadr x))
-                                           (caddr x)))
-                                   costume-form)))))
+    (:costumes costumes parse-costume-forms)))
 
 (defparameter *json-furre-ignored-keywords*
   '(:snam :state))
 
 (defun json-furre (json)
-  (loop with instance = (make-instance 'standard-furre)
+  (loop with furre = (make-instance 'standard-furre)
+        with costume = (make-instance 'standard-costume)
         for (keyword . value) in json
-        for entry = (assoc keyword *json-furre-keywords*)
-        if (and (null entry)
-                (not (member keyword *json-furre-ignored-keywords*)))
+        for furre-entry = (assoc keyword *json-furre-keywords*)
+        for costume-entry = (assoc keyword *json-costume-keywords*)
+        if (and (null furre-entry) (null costume-entry)
+                (not (member keyword *json-furre-ignored-keywords*))
+                (not (member keyword *json-costume-ignored-keywords*)))
           collect (cons keyword value) into unknowns
-        else unless (member keyword *json-furre-ignored-keywords*) do
-          (destructuring-bind (keyword accessor . maybe-fn) entry
-            (declare (ignore keyword))
-            (let* ((filter (or (car maybe-fn) #'identity))
-                   (setter (fdefinition (list 'setf accessor))))
-              (funcall setter (funcall filter value) instance)))
-        finally (return (values instance unknowns))))
+        else
+          if (and furre-entry
+                  (not (member keyword *json-furre-ignored-keywords*)))
+            do (destructuring-bind (keyword accessor . maybe-fn) furre-entry
+                 (declare (ignore keyword))
+                 (let* ((filter (or (car maybe-fn) #'identity))
+                        (setter (fdefinition (list 'setf accessor))))
+                   (funcall setter (funcall filter value) furre)))
+        else
+          if (and costume-entry
+                  (not (member keyword *json-costume-ignored-keywords*)))
+            do (destructuring-bind (keyword accessor . maybe-fn) costume-entry
+                 (declare (ignore keyword))
+                 (let* ((filter (or (car maybe-fn) #'identity))
+                        (setter (fdefinition (list 'setf accessor))))
+                   (funcall setter (funcall filter value) costume)))
+        finally (push costume (costumes furre))
+                (setf (furre costume) furre)
+                (return (values furre unknowns))))
 
 (defun fetch-furre (sname cookie-jar)
   "Fetches the furre with the provided shortname from the Furcadia web services,
@@ -225,17 +225,18 @@ unsuccessful."
 
 (defparameter *json-costume-keywords*
   `((:cid cid parse-integer)
-    (:ord order parse-integer)
+    (:ord ordinal parse-integer)
     (:desc description)
     (:colr color-code)
     (:digo digo)
     (:port portrait parse-integer)
     (:scal scale parse-integer)
     ;; (:glom glom) ;; TODO figure out what it is
-    (:tag tag parse-integer)
-    (:strd standard ,(lambda (x) (rassoc-value *desc-standards*
-                                               (parse-integer x))))
+    (:tag specitag parse-integer)
+    (:strd rating ,(lambda (x) (assoc-value *desc-standards*
+                                            (parse-integer x))))
     (:name name)
+    (:aresp auto-response)
     (:atime afk-time parse-integer)
     (:amaxtime afk-max-time parse-integer)
     (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
@@ -249,3 +250,18 @@ unsuccessful."
 
 (defparameter *json-costume-ignored-keywords*
   '(:state :glom))
+
+(defun json-costume (json)
+  (loop with instance = (make-instance 'standard-costume)
+        for (keyword . value) in json
+        for entry = (assoc keyword *json-costume-keywords*)
+        if (and (null entry)
+                (not (member keyword *json-costume-ignored-keywords*)))
+          collect (cons keyword value) into unknowns
+        else unless (member keyword *json-costume-ignored-keywords*) do
+          (destructuring-bind (keyword accessor . maybe-fn) entry
+            (declare (ignore keyword))
+            (let* ((filter (or (car maybe-fn) #'identity))
+                   (setter (fdefinition (list 'setf accessor))))
+              (funcall setter (funcall filter value) instance)))
+        finally (return (values instance unknowns))))

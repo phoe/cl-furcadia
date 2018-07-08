@@ -12,6 +12,7 @@
                #:protest)
   :serial t
   :components ((:file "package")
+               (:file "named")
                (:file "account")
                (:file "costume")
                (:file "furre")
