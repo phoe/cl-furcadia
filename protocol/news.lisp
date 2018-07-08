@@ -6,7 +6,7 @@
 (in-package :cl-furcadia/protocol)
 
 (define-protocol news
-    (:description "The NEWS protocol describes objects representing news for ~
+    (:documentation "The NEWS protocol describes objects representing news for ~
 the MMOSG Furcadia. These news have basic textual information, such as a title ~
 and contents, contain date and category information and may contain images and
 hyperlinks."
@@ -42,3 +42,5 @@ protocol class."
   (:function (setf image-url)
              ((new-value (or string null)) (news news)) (or string null))
   "Returns the URL of the news's image, or NIL if there is none.")
+
+(execute-protocol news)

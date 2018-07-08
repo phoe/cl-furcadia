@@ -6,9 +6,9 @@
 (in-package :cl-furcadia/protocol)
 
 (define-protocol digo
-    (:description "The DIGO protocol describes objects representing different ~
-looks for characters in MMOSG Furcadia, commonly called digos. Each of these ~
-objects gives a particular look to the furre that \"wears\" it.
+    (:documentation "The DIGO protocol describes objects representing ~
+different looks for characters in MMOSG Furcadia, commonly called digos. Each ~
+of these objects gives a particular look to the furre that \"wears\" it.
 \
 Each digo object is uniquely identified by its index value. Some digos have ~
 two indices; in this case, one of them is the main index and the other denotes ~
@@ -51,6 +51,8 @@ have an alternate form."
   (:function fox-file ((digo digo)) (or null pathname))
   "Returns the pathname to the FOX file associated with the digo, or NULL if ~
 there is no such file."
-  (:function fox-file
+  (:function (setf fox-file)
              ((new-value (or null pathname)) (digo digo)) (or null pathname))
   "Sets the pathname to the FOX file associated with the digo.")
+
+(execute-protocol digo)

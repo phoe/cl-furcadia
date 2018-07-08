@@ -7,10 +7,10 @@
 
 ;;; TODO make SETTER in PROTEST?
 (define-protocol furre
-    (:description "The FURRE protocol describes objects representing playable ~
-characters in MMOSG Furcadia; they are called furres. These characters are ~
-able to be logged into the game, post messages for other characters to see and ~
-their players to read, change their appearances, etc..
+    (:documentation "The FURRE protocol describes objects representing ~
+playable characters in MMOSG Furcadia; they are called furres. These ~
+characters are able to be logged into the game, post messages for other ~
+characters to see and their players to read, change their appearances, etc..
 \
 Each furre belongs to an account.
 \
@@ -138,3 +138,5 @@ false otherwise."
   "Sets a list of all costumes available on the furre."
   ;; TODO costume protocol
   )
+
+(execute-protocol furre)
