@@ -1,11 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; RAPTOR-LAUNCHER
+;;;; CL-FURCADIA
 ;;;; © Michał "phoe" Herda 2017
 ;;;; furre.lisp
 
 (in-package :cl-furcadia/protocol)
 
-;;; TODO make SETTER in PROTEST?
 (define-protocol furre
     (:documentation "The FURRE protocol describes objects representing ~
 playable characters in MMOSG Furcadia; they are called furres. These ~
@@ -15,10 +14,15 @@ characters to see and their players to read, change their appearances, etc..
 Each furre belongs to an account.
 \
 Indirect instances of this class should be returned every time client code ~
-successfully accesses Furcadia WS to retrieve characters from the servers."
+successfully accesses Furcadia WS to retrieve characters from the servers.
+\
+Each furre downloaded from the Furcadia WS has a so-called \"Last Appearance\" ~
+costume embedded in its data. This is represented by the fact that the ~
+protocol class FURRE is a subclass of protocol class COSTUME."
      :tags (:cl-furcadia :furre)
+     :dependencies (costume)
      :export t)
-  (:class furre () ())
+  (:class furre (costume) ())
   "A furre object. Each class participating in this protocol must subclass ~
 this protocol class."
   (:function uid ((furre furre)) unsigned-byte)

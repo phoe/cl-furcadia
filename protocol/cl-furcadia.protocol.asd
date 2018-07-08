@@ -13,6 +13,7 @@
   :serial t
   :components ((:file "package")
                (:file "account")
+               (:file "costume")
                (:file "furre")
                (:file "digo")
                (:file "news")))

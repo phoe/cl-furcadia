@@ -72,9 +72,9 @@ brightness (0 is brightest).")
   "A list of all known FOX5 file generators.")
 
 (defvar *color-values*
-  '((:badge . 1) (:cape . 2) (:eyes . 3) (:markings . 4) (:vest . 6) (:accent . 7)
-    (:bracers . 9) (:wings . 10) (:trousers . 12) (:hair . 13) (:boots . 14)
-    (:fur . 15) (:outline . 255))
+  '((:badge . 1) (:cape . 2) (:eyes . 3) (:markings . 4) (:vest . 6)
+    (:accent . 7) (:bracers . 9) (:wings . 10) (:trousers . 12) (:hair . 13)
+    (:boots . 14) (:fur . 15) (:outline . 255))
   "Alist between remap types and their respective integers")
 
 (defvar *legacy-remap-types*
@@ -109,7 +109,7 @@ codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
   '((16 :fur :markings) (21 :fur :hair) (26 :fur :wings)
     (31 :markings :hair) (36 :markings :wings) (41 :hair :wings))
   "All blends defined in the FOX5 specification, in form of (STARTING-SLIDE
-COUNT COLOR-1 COLOR-2).")
+COLOR-1 COLOR-2).")
 
 (defvar *kitterspeak*
   '((2 . :delay) (3 . :loop) (4 . :jump) (5 . :frame-x) (6 . :frame-y)

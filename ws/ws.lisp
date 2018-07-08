@@ -120,7 +120,12 @@ web services."
     (:ports portraits)
     (:specitags specitags)
     (:specitag-remap specitag-remap)
-    (:costumes costumes)))
+    (:costumes costumes ,(lambda (costume-form)
+                           (mapcar (lambda (x)
+                                     (list (parse-integer (symbol-name (car x)))
+                                           (parse-integer (cadr x))
+                                           (caddr x)))
+                                   costume-form)))))
 
 (defparameter *json-furre-ignored-keywords*
   '(:snam :state))
@@ -129,14 +134,15 @@ web services."
   (loop with instance = (make-instance 'standard-furre)
         for (keyword . value) in json
         for entry = (assoc keyword *json-furre-keywords*)
-        if (and (null entry) (not (member keyword *json-furre-ignored-keywords*)))
+        if (and (null entry)
+                (not (member keyword *json-furre-ignored-keywords*)))
           collect (cons keyword value) into unknowns
         else unless (member keyword *json-furre-ignored-keywords*) do
           (destructuring-bind (keyword accessor . maybe-fn) entry
             (declare (ignore keyword))
-            (let* ((fn (or (car maybe-fn) #'identity))
-                   (setf (fdefinition (list 'setf accessor))))
-              (funcall setf (funcall fn value) instance)))
+            (let* ((filter (or (car maybe-fn) #'identity))
+                   (setter (fdefinition (list 'setf accessor))))
+              (funcall setter (funcall filter value) instance)))
         finally (return (values instance unknowns))))
 
 (defun fetch-furre (sname cookie-jar)
@@ -218,17 +224,18 @@ unsuccessful."
     (decode-json (make-string-input-stream response))))
 
 (defparameter *json-costume-keywords*
-  `((:cid)
-    (:ord)
+  `((:cid cid parse-integer)
+    (:ord order parse-integer)
     (:desc description)
     (:colr color-code)
     (:digo digo)
     (:port portrait parse-integer)
-    (:scal)
-    (:glom)
+    (:scal scale parse-integer)
+    ;; (:glom glom) ;; TODO figure out what it is
     (:tag tag parse-integer)
-    (:strd)
-    (:name)
+    (:strd standard ,(lambda (x) (rassoc-value *desc-standards*
+                                               (parse-integer x))))
+    (:name name)
     (:atime afk-time parse-integer)
     (:amaxtime afk-max-time parse-integer)
     (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
@@ -241,4 +248,4 @@ unsuccessful."
     (:acolr afk-color-code)))
 
 (defparameter *json-costume-ignored-keywords*
-  '(:state))
+  '(:state :glom))
