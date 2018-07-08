@@ -12,6 +12,9 @@
    (%name :accessor name
           :initarg :name
           :initform "Default Appearance")
+   (%rating :accessor rating
+            :initarg :rating
+            :initform :t+)
    (%furre :accessor furre
            :initarg :furre
            :initform nil)
@@ -39,9 +42,6 @@
    (%portrait :accessor portrait
               :initarg :portrait
               :initform 0)
-   (%rating :accessor rating
-            :initarg :rating
-            :initform :t+)
    (%auto-response :accessor auto-response
                    :initarg :auto-response
                    :initform "")

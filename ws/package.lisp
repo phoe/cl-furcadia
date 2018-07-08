@@ -18,6 +18,7 @@
    #:login
    #:fetch-account
    #:fetch-furre
+   #:fetch-costume
    #:save-furre
    #:ensure-digo
    #:update-digo-data

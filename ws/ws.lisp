@@ -184,13 +184,20 @@ unsuccessful."
   (values (http-save-furre furre account cookie-jar)))
 
 ;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
-(defun fetch-everything (config)
-  (multiple-value-bind (account snames last-logins) (fetch-account config)
-    (let ((furres (mapcar (rcurry #'fetch-furre config) snames)))
+(defun fetch-everything (cookie-jar)
+  (multiple-value-bind (account snames last-logins) (fetch-account cookie-jar)
+    (let ((furres (mapcar (rcurry #'fetch-furre cookie-jar) snames)))
       (setf (furres account) furres)
       (loop for furre in furres
             for last-login in last-logins
-            do (setf (last-login furre) last-login)))
+            do (setf (last-login furre) last-login)
+               (loop for costume-list on (costumes furre)
+                     for costume = (car costume-list)
+                     if (listp costume)
+                       do (setf (car costume-list)
+                                (json-costume (http-get-costume (second costume)
+                                                                cookie-jar)
+                                              furre)))))
     account))
 
 ;; Load portrait
@@ -225,6 +232,7 @@ unsuccessful."
 
 (defparameter *json-costume-keywords*
   `((:cid cid parse-integer)
+    (:name name)
     (:ord ordinal parse-integer)
     (:desc description)
     (:colr color-code)
@@ -235,7 +243,6 @@ unsuccessful."
     (:tag specitag parse-integer)
     (:strd rating ,(lambda (x) (assoc-value *desc-standards*
                                             (parse-integer x))))
-    (:name name)
     (:aresp auto-response)
     (:atime afk-time parse-integer)
     (:amaxtime afk-max-time parse-integer)
@@ -251,7 +258,7 @@ unsuccessful."
 (defparameter *json-costume-ignored-keywords*
   '(:state :glom))
 
-(defun json-costume (json)
+(defun json-costume (json &optional furre)
   (loop with instance = (make-instance 'standard-costume)
         for (keyword . value) in json
         for entry = (assoc keyword *json-costume-keywords*)
@@ -264,4 +271,8 @@ unsuccessful."
             (let* ((filter (or (car maybe-fn) #'identity))
                    (setter (fdefinition (list 'setf accessor))))
               (funcall setter (funcall filter value) instance)))
-        finally (return (values instance unknowns))))
+        finally (setf (furre instance) furre)
+                (return (values instance unknowns))))
+
+(defun fetch-costume (cid cookie-jar)
+  (json-costume (http-get-costume cid cookie-jar)))
