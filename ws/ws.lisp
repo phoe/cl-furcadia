@@ -186,19 +186,19 @@ unsuccessful."
 ;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
 (defun fetch-everything (cookie-jar)
   (multiple-value-bind (account snames last-logins) (fetch-account cookie-jar)
-    (let ((furres (mapcar (rcurry #'fetch-furre cookie-jar) snames)))
-      (setf (furres account) furres)
-      (loop for furre in furres
-            for last-login in last-logins
-            do (setf (last-login furre) last-login)
-               (loop for costume-list on (costumes furre)
-                     for costume = (car costume-list)
-                     if (listp costume)
-                       do (setf (car costume-list)
-                                (json-costume (http-get-costume (second costume)
-                                                                cookie-jar)
-                                              furre)))))
-    account))
+    (prog1 account
+      (let ((furres (mapcar (rcurry #'fetch-furre cookie-jar) snames)))
+        (setf (furres account) furres)
+        (loop for furre in furres
+              for last-login in last-logins
+              do (setf (last-login furre) last-login)
+                 (loop for costume-list on (costumes furre)
+                       for costume = (car costume-list)
+                       if (listp costume)
+                         do (let ((json (http-get-costume (second costume)
+                                                          cookie-jar)))
+                              (setf (car costume-list)
+                                    (json-costume json furre)))))))))
 
 ;; Load portrait
 
@@ -207,6 +207,7 @@ unsuccessful."
 
 (defun load-portrait (id cookie-jar)
   (let* ((url (format nil *url-fured-portrait* id)))
+    ;; TODO get a stream instead of creating a displaced array
     (multiple-value-bind (response status headers uri stream closedp reason)
         (drakma:http-request url :cookie-jar cookie-jar)
       (declare (ignore headers uri stream closedp))
