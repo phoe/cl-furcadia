@@ -31,5 +31,5 @@
               :initarg :fox-file
               :initform nil)))
 
-(define-readable-print (digo stream :identity nil)
+(define-readable-print (standard-digo stream :identity nil)
   (format stream "~A (~D)" (name digo) (index digo)))

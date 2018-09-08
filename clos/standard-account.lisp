@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; CL-FURCADIA
 ;;;; © Michał "phoe" Herda 2017
-;;;; account.lisp
+;;;; standard-account.lisp
 
 (in-package #:cl-furcadia/clos)
 
@@ -27,10 +27,12 @@
              :initarg :session
              :initform nil)))
 
-(define-constructor (account json-characters)
+(define-constructor (standard-account json-characters)
+  (unless (slot-boundp account 'email)
+    (error "Must provide EMAIL."))
   (when (and json-characters (not (slot-boundp account '%furres)))
     (setf (furres account)
           (mapcar #'character-furre json-characters))))
 
-(define-readable-print (account stream :identity nil)
+(define-readable-print (standard-account stream :identity nil)
   (format stream "~A" (email account)))

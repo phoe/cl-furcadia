@@ -33,7 +33,7 @@ implementation, such as PMAPCAR from the LPARALLEL package."
         (push date dates)))
     (when last-modified
       (push last-modified dates))
-    (values (sort news #'timestamp> :key #'date)
+    (values (sort news #'date> :key #'date)
             (extremum dates #'string>))))
 
 (defun get-url (url &rest drakma-args)
@@ -66,10 +66,11 @@ objects, sorted from newest."
       (let ((parsed-date (cl-furcadia/date-parser:parse-date datestring)))
         (destructuring-bind (day month year) parsed-date
           (let* ((timestamp (encode-timestamp 0 0 0 0 day month year))
+                 (date (change-class timestamp 'standard-date))
                  (image-filename (url-filename image-url))
-                 (from (list title contents category timestamp datestring
+                 (from (list title contents category date datestring
                              url image-url image-filename)))
-            (make-instance 'news :from from)))))))
+            (make-instance 'standard-news :from from)))))))
 
 ;; TODO implement this in Raptor Launcher instead, since it'll have both
 ;; drakma and lparallel in its dependencies

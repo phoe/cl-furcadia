@@ -9,6 +9,8 @@
   :license "BSD 3-clause"
   :depends-on (#:alexandria
                #:phoe-toolbox
+               #:local-time
+               #:lorem-ipsum ;; TODO remove when in production
                #:cl-furcadia.base
                #:cl-furcadia.protocol)
   :serial t
@@ -17,4 +19,6 @@
                (:file "standard-costume")
                (:file "standard-furre")
                (:file "standard-account")
-               (:file "standard-news")))
+               (:file "standard-date")
+               (:file "standard-news")
+               (:file "standard-post")))

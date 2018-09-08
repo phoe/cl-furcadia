@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; CL-FURCADIA
 ;;;; © Michał "phoe" Herda 2017
-;;;; news.lisp
+;;;; standard-news.lisp
 
 (in-package :cl-furcadia/clos)
 
@@ -21,15 +21,14 @@
    (%image-url :accessor image-url
                :initarg :image-url)
    (%image-filename :accessor image-filename
-                    :initarg :image-filename))
-  (:documentation "A piece of news."))
+                    :initarg :image-filename)))
 
 (define-constructor (standard-news from)
   (when from
     (assert (listp from))
     (assert (= 8 (length from)))
-    (destructuring-bind (title contents category date datestring
-                         url image-url image-filename)
+    (destructuring-bind
+        (title contents category date datestring url image-url image-filename)
         from
       (setf (title standard-news) title
             (contents standard-news) contents

@@ -27,10 +27,9 @@ protocol class."
   "Returns the category of the news."
   (:function (setf category) ((new-value string) (news news)) string)
   "Sets the category of the news."
-  ;; TODO type T? or date protocol? lol, I can import GATEWAY/PROTOCOL:DATE
-  (:function date ((news news)) t)
+  (:function date ((news news)) date)
   "Returns the date of the news."
-  (:function (setf date) ((new-value t) (news news)) t)
+  (:function (setf date) ((new-value date) (news news)) date)
   "Returns the date of the news."
   (:function url ((news news)) (or string null))
   "Returns the URL of the news, or NIL if there is none."

@@ -9,7 +9,8 @@
   :license "BSD 3-clause"
   :depends-on (#:alexandria
                #:phoe-toolbox
-               #:protest)
+               #:protest/protocol
+               #:protest/common/date)
   :serial t
   :components ((:file "package")
                (:file "named")
@@ -17,4 +18,5 @@
                (:file "costume")
                (:file "furre")
                (:file "digo")
-               (:file "news")))
+               (:file "news")
+               (:file "post")))

@@ -6,4 +6,5 @@
 (uiop:define-package #:cl-furcadia/protocol
   (:use #:cl
         #:alexandria
-        #:protest))
+        #:protest/protocol
+        #:protest/common/date))

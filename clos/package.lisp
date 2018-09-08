@@ -8,6 +8,7 @@
    #:cl
    #:alexandria
    #:phoe-toolbox
+   #:protest/common/date
    #:cl-furcadia/base
    #:cl-furcadia/protocol)
   (:export
@@ -15,4 +16,6 @@
    #:standard-furre
    #:standard-costume
    #:standard-account
-   #:standard-news))
+   #:standard-news
+   #:standard-date #:now
+   #:standard-post))
