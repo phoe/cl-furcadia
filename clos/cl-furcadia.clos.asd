@@ -19,6 +19,7 @@
                (:file "standard-costume")
                (:file "standard-furre")
                (:file "standard-account")
+               (:file "standard-portrait")
                (:file "standard-date")
                (:file "standard-news")
                (:file "standard-post")))

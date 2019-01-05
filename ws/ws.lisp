@@ -262,7 +262,7 @@ unsuccessful."
 (defvar *url-fured-portrait*
   "https://cms.furcadia.com/fured/loadPortrait.php?pid=~D")
 
-(defun http-get-portrait (pid cookie-jar)
+(defun fetch-portrait (pid cookie-jar)
   (let* ((url (format nil *url-fured-portrait* pid)))
     (multiple-value-bind (stream status headers uri stream2 closedp reason)
         (drakma:http-request url :cookie-jar cookie-jar :want-stream t)
@@ -274,4 +274,5 @@ unsuccessful."
                      ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
              (remappedp (ecase (read-byte stream) (0 nil) (1 t)))
              (data (read-stream-content-into-byte-vector stream)))
-        (values data type remappedp)))))
+        (make-instance 'standard-portrait :portrait-type type :pid pid
+                                          :remappedp remappedp :data data)))))

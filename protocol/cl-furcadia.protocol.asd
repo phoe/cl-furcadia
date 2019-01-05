@@ -18,5 +18,6 @@
                (:file "costume")
                (:file "furre")
                (:file "digo")
+               (:file "portrait")
                (:file "news")
                (:file "post")))

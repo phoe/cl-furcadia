@@ -16,6 +16,7 @@
    #:standard-furre
    #:standard-costume
    #:standard-account
+   #:standard-portrait
    #:standard-news
    #:standard-date #:now
    #:standard-post))
