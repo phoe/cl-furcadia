@@ -200,27 +200,6 @@ unsuccessful."
                               (setf (car costume-list)
                                     (json-costume json furre)))))))))
 
-;; Load portrait
-
-(defvar *url-fured-portrait*
-  "https://cms.furcadia.com/fured/loadPortrait.php?pid=~D")
-
-(defun load-portrait (id cookie-jar)
-  (let* ((url (format nil *url-fured-portrait* id)))
-    ;; TODO get a stream instead of creating a displaced array
-    (multiple-value-bind (response status headers uri stream closedp reason)
-        (drakma:http-request url :cookie-jar cookie-jar)
-      (declare (ignore headers uri stream closedp))
-      (unless (= 2 (truncate status 100))
-        (error "HTTP request unsuccessful (~D): ~A" status reason))
-      (let ((type (ecase (aref response 0) ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
-            (remappedp (ecase (aref response 1) (0 nil) (1 t)))
-            (data (make-array (- (length response) 2)
-                              :element-type (array-element-type response)
-                              :displaced-to response
-                              :displaced-index-offset 2)))
-        (values data type remappedp)))))
-
 ;; Load costume
 
 (defvar *url-fured-costume*
@@ -277,3 +256,22 @@ unsuccessful."
 
 (defun fetch-costume (cid cookie-jar)
   (json-costume (http-get-costume cid cookie-jar)))
+
+;; Load portrait
+
+(defvar *url-fured-portrait*
+  "https://cms.furcadia.com/fured/loadPortrait.php?pid=~D")
+
+(defun http-get-portrait (pid cookie-jar)
+  (let* ((url (format nil *url-fured-portrait* pid)))
+    (multiple-value-bind (stream status headers uri stream2 closedp reason)
+        (drakma:http-request url :cookie-jar cookie-jar :want-stream t)
+      (declare (ignore headers uri stream2 closedp))
+      (unless (= 2 (truncate status 100))
+        (error "HTTP request unsuccessful (~D): ~A" status reason))
+      (let* ((stream (flex:flexi-stream-stream stream))
+             (type (ecase (read-byte stream)
+                     ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
+             (remappedp (ecase (read-byte stream) (0 nil) (1 t)))
+             (data (read-stream-content-into-byte-vector stream)))
+        (values data type remappedp)))))

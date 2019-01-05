@@ -19,6 +19,7 @@
    #:fetch-account
    #:fetch-furre
    #:fetch-costume
+   #:fetch-portrait
    #:save-furre
    #:ensure-digo
    #:update-digo-data
