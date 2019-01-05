@@ -32,7 +32,10 @@
                     :initform nil)
    (%costumes :accessor costumes
               :initarg :costumes
-              :initform '())))
+              :initform '())
+   (%account :accessor account
+             :initarg :account
+             :initform nil)))
 
 (defmethod shortname ((furre standard-furre))
   (name-shortname (name furre)))

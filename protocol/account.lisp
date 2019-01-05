@@ -54,6 +54,10 @@ account."
   (:function (setf session)
              ((new-value (or string null)) (account account)) (or string null))
   "Sets the Furcadia Web Services session identifier associated with the ~
-account.")
+account."
+  (:function cookie-jar-of ((account account)) t)
+  "Returns the cookie jar associated with the account."
+  (:function (setf cookie-jar-of) (new-value (account account)) t)
+  "Sets the cookie jar associated with the account.")
 
 (execute-protocol account)

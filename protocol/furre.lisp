@@ -61,6 +61,10 @@ the furre and is otherwise immutable."
   (:function (setf costumes) ((new-value list) (furre furre)) list)
   "Sets a list of all costumes available on the furre."
   ;; TODO costume protocol
-  )
+  (:function account ((furre furre)) (or null account))
+  "Returns the account the furre belongs to."
+  (:function (setf account)
+             ((new-value (or null account)) (furre furre)) (or null account))
+  "Sets the account the furre belongs to.")
 
 (execute-protocol furre)

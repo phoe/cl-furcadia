@@ -25,14 +25,19 @@
             :initform '())
    (%session :accessor session
              :initarg :session
-             :initform nil)))
+             :initform nil)
+   (%cookie-jar :accessor cookie-jar-of
+                :initarg :cookie-jar
+                :initform nil)))
 
-(define-constructor (standard-account json-characters)
-  (unless (slot-boundp account 'email)
+(define-constructor (standard-account)
+  (unless (slot-boundp standard-account '%email)
     (error "Must provide EMAIL."))
-  (when (and json-characters (not (slot-boundp account '%furres)))
-    (setf (furres account)
-          (mapcar #'character-furre json-characters))))
+  ;; TODO what is #'CHARACTER-FURRE?
+  ;; (when (and json-characters (not (slot-boundp account '%furres)))
+  ;;   (setf (furres standard-account)
+  ;;         (mapcar #'character-furre json-characters)))
+  )
 
 (define-readable-print (standard-account stream :identity nil)
-  (format stream "~A" (email account)))
+  (format stream "~A" (email standard-account)))
