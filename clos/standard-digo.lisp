@@ -32,4 +32,4 @@
               :initform nil)))
 
 (define-readable-print (standard-digo stream :identity nil)
-  (format stream "~A (~D)" (name digo) (index digo)))
+  (format stream "~A (~D)" (name standard-digo) (index standard-digo)))
