@@ -10,24 +10,6 @@
   (:documentation #.(format nil "A standard implementation of Gateway protocol ~
 class DATE.")))
 
-(defmethod serialize ((object standard-date) &key (type :list))
-  (let ((data `(:date :string ,(format nil "~A" object))))
-    (ecase type
-      (:list data)
-      (:string (prinr-to-string data)))))
-
-(defmethod deserialize-using-class
-    ((class (eql (find-class 'standard-date))) data)
-  (check-type data cons)
-  (assert (= (length data) 3))
-  (destructuring-bind (symbol . plist) data
-    (check-type symbol symbol)
-    (assert (string= symbol :date))
-    (let ((string (data-getf plist :string)))
-      (check-type string string)
-      (change-class (local-time:parse-timestring string)
-                    'standard-date))))
-
 (defmethod date-timestamp ((date standard-date))
   (local-time:timestamp-to-unix date))
 
