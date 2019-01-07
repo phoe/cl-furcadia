@@ -141,6 +141,26 @@ web services."
 (defun fetch-costume (cid cookie-jar)
   (json-costume (http-get-costume cid cookie-jar)))
 
+;; Load portrait
+
+(defvar *url-fured-portrait*
+  "https://cms.furcadia.com/fured/loadPortrait.php?pid=~D")
+
+(defun fetch-portrait (pid cookie-jar)
+  (let* ((url (format nil *url-fured-portrait* pid)))
+    (multiple-value-bind (stream status headers uri stream2 closedp reason)
+        (drakma:http-request url :cookie-jar cookie-jar :want-stream t)
+      (declare (ignore headers uri stream2 closedp))
+      (unless (= 2 (truncate status 100))
+        (error "HTTP request unsuccessful (~D): ~A" status reason))
+      (let* ((stream (flex:flexi-stream-stream stream))
+             (type (ecase (read-byte stream)
+                     ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
+             (remappedp (ecase (read-byte stream) (0 nil) (1 t)))
+             (data (read-stream-content-into-byte-vector stream)))
+        (make-instance 'standard-portrait :portrait-type type :pid pid
+                                          :remappedp remappedp :data data)))))
+
 ;;; Fetch furre
 
 (defparameter *json-furre-ignored-keywords*
@@ -256,23 +276,3 @@ unsuccessful."
                                                           cookie-jar)))
                               (setf (car costume-list)
                                     (json-costume json furre)))))))))
-
-;; Load portrait
-
-(defvar *url-fured-portrait*
-  "https://cms.furcadia.com/fured/loadPortrait.php?pid=~D")
-
-(defun fetch-portrait (pid cookie-jar)
-  (let* ((url (format nil *url-fured-portrait* pid)))
-    (multiple-value-bind (stream status headers uri stream2 closedp reason)
-        (drakma:http-request url :cookie-jar cookie-jar :want-stream t)
-      (declare (ignore headers uri stream2 closedp))
-      (unless (= 2 (truncate status 100))
-        (error "HTTP request unsuccessful (~D): ~A" status reason))
-      (let* ((stream (flex:flexi-stream-stream stream))
-             (type (ecase (read-byte stream)
-                     ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
-             (remappedp (ecase (read-byte stream) (0 nil) (1 t)))
-             (data (read-stream-content-into-byte-vector stream)))
-        (make-instance 'standard-portrait :portrait-type type :pid pid
-                                          :remappedp remappedp :data data)))))
