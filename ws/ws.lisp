@@ -84,7 +84,67 @@ cookie jar with associated login cookies."
 web services."
   (json-account (http-get-account cookie-jar)))
 
+;; Load costume
+
+(defvar *url-fured-costume*
+  "https://cms.furcadia.com/fured/loadCostume.php?cid=~D")
+
+(defun http-get-costume (cid cookie-jar)
+  (let* ((url (format nil *url-fured-costume* cid))
+         (response (drakma:http-request url :cookie-jar cookie-jar)))
+    (decode-json (make-string-input-stream response))))
+
+(defparameter *json-costume-ignored-keywords*
+  '(:state :glom))
+
+(defparameter *json-costume-keywords*
+  `((:cid cid parse-integer)
+    (:name name)
+    (:ord ordinal parse-integer)
+    (:desc description)
+    (:colr color-code)
+    (:digo digo)
+    (:port portrait parse-integer)
+    (:scal scale parse-integer)
+    ;; (:glom glom) ;; TODO figure out what it is
+    (:tag specitag parse-integer)
+    (:strd rating ,(lambda (x) (assoc-value *desc-standards*
+                                            (parse-integer x))))
+    (:aresp auto-response)
+    (:atime afk-time parse-integer)
+    (:amaxtime afk-max-time parse-integer)
+    (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
+    (:adigo afk-digo)
+    (:awhsp afk-whisper)
+    (:aport afk-portrait parse-integer)
+    (:wing wings)
+    (:awing afk-wings)
+    (:adesc afk-description)
+    (:acolr afk-color-code)))
+
+(defun json-costume (json &optional furre)
+  (loop with instance = (make-instance 'standard-costume)
+        for (keyword . value) in json
+        for entry = (assoc keyword *json-costume-keywords*)
+        if (and (null entry)
+                (not (member keyword *json-costume-ignored-keywords*)))
+          collect (cons keyword value) into unknowns
+        else unless (member keyword *json-costume-ignored-keywords*) do
+          (destructuring-bind (keyword accessor . maybe-fn) entry
+            (declare (ignore keyword))
+            (let* ((filter (or (car maybe-fn) #'identity))
+                   (setter (fdefinition (list 'setf accessor))))
+              (funcall setter (funcall filter value) instance)))
+        finally (setf (furre instance) furre)
+                (return (values instance unknowns))))
+
+(defun fetch-costume (cid cookie-jar)
+  (json-costume (http-get-costume cid cookie-jar)))
+
 ;;; Fetch furre
+
+(defparameter *json-furre-ignored-keywords*
+  '(:snam :state))
 
 (defvar *url-fured-load*
   "https://cms.furcadia.com/fured/loadCharacter.php")
@@ -111,9 +171,6 @@ web services."
     (:specitags specitags)
     (:specitag-remap specitag-remap)
     (:costumes costumes parse-costume-forms)))
-
-(defparameter *json-furre-ignored-keywords*
-  '(:snam :state))
 
 (defun json-furre (json)
   (loop with furre = (make-instance 'standard-furre)
@@ -199,63 +256,6 @@ unsuccessful."
                                                           cookie-jar)))
                               (setf (car costume-list)
                                     (json-costume json furre)))))))))
-
-;; Load costume
-
-(defvar *url-fured-costume*
-  "https://cms.furcadia.com/fured/loadCostume.php?cid=~D")
-
-(defun http-get-costume (cid cookie-jar)
-  (let* ((url (format nil *url-fured-costume* cid))
-         (response (drakma:http-request url :cookie-jar cookie-jar)))
-    (decode-json (make-string-input-stream response))))
-
-(defparameter *json-costume-keywords*
-  `((:cid cid parse-integer)
-    (:name name)
-    (:ord ordinal parse-integer)
-    (:desc description)
-    (:colr color-code)
-    (:digo digo)
-    (:port portrait parse-integer)
-    (:scal scale parse-integer)
-    ;; (:glom glom) ;; TODO figure out what it is
-    (:tag specitag parse-integer)
-    (:strd rating ,(lambda (x) (assoc-value *desc-standards*
-                                            (parse-integer x))))
-    (:aresp auto-response)
-    (:atime afk-time parse-integer)
-    (:amaxtime afk-max-time parse-integer)
-    (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
-    (:adigo afk-digo)
-    (:awhsp afk-whisper)
-    (:aport afk-portrait parse-integer)
-    (:wing wings)
-    (:awing afk-wings)
-    (:adesc afk-description)
-    (:acolr afk-color-code)))
-
-(defparameter *json-costume-ignored-keywords*
-  '(:state :glom))
-
-(defun json-costume (json &optional furre)
-  (loop with instance = (make-instance 'standard-costume)
-        for (keyword . value) in json
-        for entry = (assoc keyword *json-costume-keywords*)
-        if (and (null entry)
-                (not (member keyword *json-costume-ignored-keywords*)))
-          collect (cons keyword value) into unknowns
-        else unless (member keyword *json-costume-ignored-keywords*) do
-          (destructuring-bind (keyword accessor . maybe-fn) entry
-            (declare (ignore keyword))
-            (let* ((filter (or (car maybe-fn) #'identity))
-                   (setter (fdefinition (list 'setf accessor))))
-              (funcall setter (funcall filter value) instance)))
-        finally (setf (furre instance) furre)
-                (return (values instance unknowns))))
-
-(defun fetch-costume (cid cookie-jar)
-  (json-costume (http-get-costume cid cookie-jar)))
 
 ;; Load portrait
 
