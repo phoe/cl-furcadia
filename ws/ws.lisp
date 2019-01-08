@@ -173,8 +173,10 @@ web services."
       (declare (ignore headers uri stream2 closedp))
       (unless (= 2 (truncate status 100))
         (error "HTTP request unsuccessful (~D): ~A" status reason))
-      (let* ((data (pngload:load-stream stream :flatten t)))
-        data))))
+      (let* ((data (pngload:load-stream stream :flatten t))
+             (remappedp (ecase (truncate sid 10000000) (50 nil) (59 t))))
+        (make-instance 'standard-specitag :index sid :data (pngload:data data)
+                                          :remappedp remappedp)))))
 
 ;;; Fetch furre
 

@@ -18,5 +18,6 @@
    #:standard-account
    #:standard-portrait
    #:standard-news
+   #:standard-specitag
    #:standard-date #:now
    #:standard-post))

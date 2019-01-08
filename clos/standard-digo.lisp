@@ -8,7 +8,7 @@
 (defclass standard-digo (digo)
   ((%index :reader index
            :initarg :index
-           :initform (error "Must provide DIGO."))
+           :initform (error "Must provide INDEX."))
    (%name :reader name
           :initarg :name
           :initform (error "Must provide NAME."))
