@@ -20,6 +20,7 @@
    #:fetch-furre
    #:fetch-costume
    #:fetch-portrait
+   #:fetch-specitag
    #:save-furre
    #:ensure-digo
    #:update-digo-data

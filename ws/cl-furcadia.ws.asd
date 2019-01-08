@@ -13,6 +13,7 @@
                #:parse-js
                #:cl-json
                #:trivial-download
+               #:pngload
                #:cl-furcadia.constants
                #:cl-furcadia.protocol
                #:cl-furcadia.news

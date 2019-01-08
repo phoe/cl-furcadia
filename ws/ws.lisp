@@ -161,6 +161,21 @@ web services."
         (make-instance 'standard-portrait :portrait-type type :pid pid
                                           :remappedp remappedp :data data)))))
 
+;; Load specitag
+
+(defvar *url-apollo-specitag*
+  "http://apollo.furcadia.com/cache/~D.png")
+
+(defun fetch-specitag (sid)
+  (let ((url (format nil *url-apollo-specitag* sid)))
+    (multiple-value-bind (stream status headers uri stream2 closedp reason)
+        (drakma:http-request url :want-stream t :force-binary t)
+      (declare (ignore headers uri stream2 closedp))
+      (unless (= 2 (truncate status 100))
+        (error "HTTP request unsuccessful (~D): ~A" status reason))
+      (let* ((data (pngload:load-stream stream :flatten t)))
+        data))))
+
 ;;; Fetch furre
 
 (defparameter *json-furre-ignored-keywords*
