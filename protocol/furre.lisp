@@ -20,7 +20,7 @@ Each furre downloaded from the Furcadia WS has a so-called \"Last Appearance\" ~
 costume embedded in its data. This is represented by the fact that the ~
 protocol class FURRE is a subclass of protocol class COSTUME."
      :tags (:cl-furcadia :furre)
-     :dependencies (named costume)
+     :dependencies (named)
      :export t)
   (:class furre (named) ())
   "A furre object. Each class participating in this protocol must subclass ~

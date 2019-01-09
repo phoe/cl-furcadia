@@ -6,9 +6,9 @@
 (in-package #:cl-furcadia/clos)
 
 (defclass standard-post (post)
-  ((%author-shortname :accessor author-shortname
-                      :initarg :author-shortname
-                      :initform nil)
+  ((%shortname :accessor shortname
+               :initarg :shortname
+               :initform nil)
    (%date :accessor date
           :initarg :date
           :initform (now))
@@ -18,5 +18,5 @@
 
 (define-readable-print (standard-post stream :identity nil)
   (format stream "~A (~D chars)"
-          (author-shortname standard-post)
+          (or (shortname standard-post) "(anonymous)")
           (length (contents standard-post))))

@@ -178,6 +178,27 @@ web services."
         (make-instance 'standard-specitag :index sid :data (pngload:data data)
                                           :remappedp remappedp)))))
 
+;; Load image
+
+(defvar *url-raptor-systems-images*
+  "https://raptor.systems/furcadia/images/~A")
+
+(defun fetch-image-list (shortname)
+  (let ((url (format nil *url-raptor-systems-images* shortname))
+        (image-keys '(:id :timestamp :url :eye-level :sfw)))
+    (multiple-value-bind (stream status headers uri stream2 closedp reason)
+        (drakma:http-request url :want-stream t)
+      (declare (ignore headers uri stream2 closedp))
+      (cond
+        ((= status 404) '())
+        ((/= 2 (truncate status 100))
+         (error "HTTP request unsuccessful (~D): ~A" status reason))
+        (t (let* ((json (cl-json:decode-json stream)))
+             (loop for entry in json
+                   do (assert (set-equal image-keys (mapcar #'car entry)))
+                   collect (apply #'make-instance 'standard-image
+                                  (alist-plist entry)))))))))
+
 ;;; Fetch furre
 
 (defparameter *json-furre-ignored-keywords*
