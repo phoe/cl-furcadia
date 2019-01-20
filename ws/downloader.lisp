@@ -12,8 +12,8 @@
   "https://cms.furcadia.com/fured/fox5/species~D.fox~^?~D")
 
 (defun http-get-digodata ()
-  (let* ((response (get-url *digodata-url* :want-stream t))
-         (parsed (parse-js:parse-js response))
+  (let* ((stream (get-url *digodata-url* :want-stream t))
+         (parsed (parse-js:parse-js stream))
          (vars (cadr parsed))
          (digodata (find "DIGODATA" vars :test #'string= :key #'caaadr)))
     ;; God forgive me for this function call below

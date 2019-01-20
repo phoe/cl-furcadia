@@ -76,4 +76,4 @@
 (define-readable-print (standard-costume stream :identity nil)
   (format stream "~S" (name standard-costume))
   (when-let ((furre (furre standard-costume)))
-    (format stream " (~S)" (name furre))))
+    (format stream " (~A)" (name furre))))

@@ -21,12 +21,16 @@
    (%lifers :accessor lifers
             :initarg :lifers
             :initform '())
+   (%images :accessor images
+            :initarg :images
+            :initform '())
    (%portraits :accessor portraits
                :initarg :portraits
                :initform '())
    (%specitags :accessor specitags
                :initarg :specitags
                :initform '())
+   ;; TODO remove the below slot, it's useless at this stage of processing
    (%specitag-remap :accessor specitag-remap
                     :initarg :specitag-remap
                     :initform nil)

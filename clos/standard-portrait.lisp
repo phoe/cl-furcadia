@@ -23,9 +23,10 @@
           :initform #())))
 
 (define-readable-print (standard-portrait stream :identity nil)
-  (format stream "~S, ~A, ~A bytes"
+  (format stream "~D ~S, ~A, ~A bytes"
+          (pid standard-portrait)
           (portrait-type standard-portrait)
           (if (remappedp standard-portrait) "remappable" "non-remappable")
           (length (data standard-portrait)))
   (when-let ((furre (furre standard-portrait)))
-    (format stream " (~S)" (name furre))))
+    (format stream " (~A)" (name furre))))

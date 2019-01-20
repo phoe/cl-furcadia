@@ -35,4 +35,4 @@
           (iid standard-image)
           (if (sfwp standard-image) :sfw :nsfw))
   (when-let ((furre (furre standard-image)))
-    (format stream " (~D)" (shortname furre))))
+    (format stream " (~D)" (name furre))))

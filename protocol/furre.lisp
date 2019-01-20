@@ -44,23 +44,25 @@ the furre and is otherwise immutable."
   (:function (setf lifers) ((new-value list) (furre furre)) list)
   "Sets the list of digos owned by the furre for life." ;; TODO return DIGOs
   (:function portraits ((furre furre)) list)
-  "Returns the list of portraits owned by the furre." ;; TODO portrait protocol
+  "Returns the list of portraits owned by the furre."
   (:function (setf portraits) ((new-value list) (furre furre)) list)
-  "Sets the list of portraits owned by the furre." ;; TODO portrait protocol
+  "Sets the list of portraits owned by the furre."
+  (:function images ((furre furre)) list)
+  "Returns the list of images owned by the furre."
+  (:function (setf images) ((new-value list) (furre furre)) list)
+  "Sets the list of images owned by the furre."
   (:function specitags ((furre furre)) list)
-  "Returns the list of specitags owned by the furre." ;; TODO specitag protocol
+  "Returns the list of specitags owned by the furre."
   (:function (setf specitags) ((new-value list) (furre furre)) list)
-  "Sets the list of specitags owned by the furre." ;; TODO specitag protocol
+  "Sets the list of specitags owned by the furre."
   (:function specitag-remap ((furre furre)) boolean)
   "Returns if the specitag should remap."
   (:function (setf specitag-remap) ((new-value boolean) (furre furre)) boolean)
   "Sets if the specitag should remap."
   (:function costumes ((furre furre)) list)
   "Returns a list of all costumes available on the furre."
-  ;; TODO costume protocol
   (:function (setf costumes) ((new-value list) (furre furre)) list)
   "Sets a list of all costumes available on the furre."
-  ;; TODO costume protocol
   (:function account ((furre furre)) (or null account))
   "Returns the account the furre belongs to."
   (:function (setf account)
