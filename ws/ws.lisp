@@ -274,50 +274,58 @@ using the provided cookie jar."
 (defvar *url-fured-save*
   "https://cms.furcadia.com/fured/saveCharacter.php")
 
-(defun furre-json (furre account)
-  (let* ((session (session account))
-         (furre-data
-           (loop for (keyword fn) in *json-furre-keywords*
-                 for keystring = (string-downcase (princ-to-string keyword))
-                 for value = (princ-to-string (or (funcall fn furre) ""))
-                 unless (string= value "")
-                   collect (cons keystring value))))
-    (nconc furre-data (list (cons "tokenRequest" "true")
-                            (cons "tokenCostume" "-1")
-                            (cons session "1")))))
-
-(defun http-save-furre (furre account cookie-jar)
-  (let* ((json (furre-json furre account))
-         (response (drakma:http-request *url-fured-save*
-                                        :method :post
-                                        :parameters json
-                                        :cookie-jar cookie-jar))
-         (result (decode-json (make-string-input-stream response))))
-    (values (assoc-value result :login--url)
-            result)))
-
-(defun save-furre (furre account cookie-jar)
-  "Saves the provided furre to Furcadia web services, using the provided account
-and cookie jar. Returns the Furcadia login URI, or NIL if the save was
-unsuccessful."
-  (values (http-save-furre furre account cookie-jar)))
-
-;;; TODO likely doesn't work anymore
-;; ;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
-;; (defun fetch-everything (cookie-jar)
-;;   (multiple-value-bind (account snames last-logins) (fetch-account cookie-jar)
-;;     (prog1 account
-;;       (let ((furres (mapcar (rcurry #'fetch-furre cookie-jar) snames)))
-;;         (setf (furres account) furres)
-;;         (loop for furre in furres
-;;               for last-login in last-logins
-;;               do (setf (last-login furre) last-login)
-;;                  (loop for costume-list on (costumes furre)
-;;                        for costume = (car costume-list)
-;;                        if (listp costume)
-;;                          do (let ((json (http-get-costume (second costume)
-;;                                                           cookie-jar)))
-;;                               (setf (car costume-list)
-;;                                     (json-costume json furre)))))))))
-
 ;;; TODO check what happens if tokenCostume = 0 and/or tokenRequest = false
+
+(defparameter *save-furre-costume-keywords*
+  `((:acolr afk-color-code)
+    (:adesc afk-description)
+    (:adigo afk-digo)
+    (:amaxtime afk-max-time)
+    (:aport afk-portrait)
+    (:aresp auto-response)
+    (:atime afk-time)
+    (:awhsp afk-whisper)
+    (:awing afk-wings)
+    (:colr color-code)
+    (:desc description)
+    (:digo digo)
+    (:doresp auto-response-p ,(lambda (x) (if x 1 0)))
+    (:port portrait)
+    (:tag specitag)
+    (:wing wings)))
+
+(defun furre-save-params (furre)
+  (let* ((costume (active-costume furre))
+         (cid (cid costume))
+         (session (session (account furre))))
+    (loop for (keyword function . rest) in *save-furre-costume-keywords*
+          for keystring = (string-downcase (princ-to-string keyword))
+          for value = (funcall function costume)
+          for processed-value = (if rest (funcall (car rest) value) value)
+          collect (cons keystring (princ-to-string processed-value)) into result
+          finally (return (list* (cons "uid" (princ-to-string (uid furre)))
+                                 (cons "tokenCostume" (princ-to-string cid))
+                                 (cons "tokenRequest" "true")
+                                 (cons session "1")
+                                 result)))))
+
+(defun http-save-furre (furre)
+  (let* ((cookie-jar (cookie-jar-of (account furre)))
+         (params (furre-save-params furre))
+         (response (drakma:http-request *url-fured-save*
+                                        :method :post :parameters params
+                                        :redirect nil :cookie-jar cookie-jar)))
+    (if response
+        (let* ((result (decode-json (make-string-input-stream response)))
+               (login-uri (assoc-value result :login--url)))
+          (if login-uri
+              (values login-uri result)
+              (error "Saving character failed: ~A"
+                     (assoc-value result :reason))))
+        (error "The session expired. Resynchronization is needed."))))
+
+(defun save-furre (furre)
+  "Saves the provided furre to Furcadia web services, using the provided account
+and cookie jar. Returns the Furcadia login URI, or signals an error if the save
+failed."
+  (values (http-save-furre furre)))

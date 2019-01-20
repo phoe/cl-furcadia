@@ -41,10 +41,10 @@ this protocol class."
   "Returns the URL of the image."
   (:function (setf url) ((new-value string) (image image)) string)
   "Sets the URL of the image."
-  (:function data ((image image)) t)
-  "Returns the data of the image."
-  (:function (setf data) (new-value (image image)) t)
-  "Sets the data of the image."
+  (:function image-data ((image image) dl-path) t)
+  "Returns the data of the image retrieved from the given download path."
+  (:function (setf image-data) (new-value (image image) dl-path) t)
+  "Sets the data of the image to the given download path."
   (:function eye-level ((image image)) float)
   "Returns the eye level of the image."
   (:function (setf eye-level) ((new-value float) (image image)) float)

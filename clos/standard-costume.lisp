@@ -56,16 +56,16 @@
                  :initform "")
    (%afk-color-code :accessor afk-color-code
                     :initarg :afk-color-code
-                    :initform "w###############")
+                    :initform "")
    (%afk-digo :accessor afk-digo
               :initarg :afk-digo
-              :initform 0)
+              :initform nil)
    (%afk-wings :accessor afk-wings
                :initarg :afk-wings
                :initform 0)
    (%afk-portrait :accessor afk-portrait
                   :initarg :afk-portrait
-                  :initform 0)
+                  :initform nil)
    (%afk-time :accessor afk-time
               :initarg :afk-time
               :initform 0)
@@ -77,3 +77,4 @@
   (format stream "~S" (name standard-costume))
   (when-let ((furre (furre standard-costume)))
     (format stream " (~A)" (name furre))))
+
