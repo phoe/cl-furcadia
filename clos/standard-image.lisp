@@ -51,7 +51,7 @@
          (images-dir (merge-pathnames "images/" dl-path))
          (sname (shortname (furre image)))
          (image-dir (merge-pathnames (uiop:strcat sname "/") images-dir))
-         (data-path (merge-pathnames (uiop:strcat timestamp-string ".png")
+         (data-path (merge-pathnames (uiop:strcat timestamp-string ".dat")
                                      image-dir)))
     (ensure-directories-exist image-dir)
     (let ((zpng (make-instance 'zpng:png :width (pngload:width png)

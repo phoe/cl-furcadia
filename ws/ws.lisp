@@ -52,8 +52,7 @@ cookie jar with associated login cookies."
   "https://cms.furcadia.com/fured/")
 
 (defun http-get-account (cookie-jar)
-  (let* ((page (drakma:http-request *url-fured-page*
-                                    :cookie-jar cookie-jar))
+  (let* ((page (drakma:http-request *url-fured-page* :cookie-jar cookie-jar))
          (begin (search "account.JSON=" page))
          (end (search (string #\Newline) page :start2 begin))
          (subseq (subseq page (+ begin 13) (1- end)))
@@ -103,7 +102,7 @@ web services."
     (:ord ordinal parse-integer)
     (:desc description)
     (:colr color-code)
-    (:digo digo)
+    (:digo digo ,(lambda (x) (if (stringp x) (parse-integer x) x)))
     (:port portrait parse-integer)
     (:scal scale parse-integer)
     ;; (:glom glom) ;; TODO figure out what it is
@@ -114,7 +113,7 @@ web services."
     (:atime afk-time parse-integer)
     (:amaxtime afk-max-time parse-integer)
     (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
-    (:adigo afk-digo)
+    (:adigo afk-digo ,(lambda (x) (if (stringp x) (parse-integer x) x)))
     (:awhsp afk-whisper)
     (:aport afk-portrait parse-integer)
     (:wing wings)
@@ -135,8 +134,15 @@ web services."
             (let* ((filter (or (car maybe-fn) #'identity))
                    (setter (fdefinition (list 'setf accessor))))
               (funcall setter (funcall filter value) instance)))
-        finally (setf (furre instance) furre)
-                (return (values instance unknowns))))
+        finally
+           (setf (furre instance) furre)
+           (let ((digo (digo instance))
+                 (afk-digo (afk-digo instance)))
+             (setf (digo instance)
+                   (and (/= 0 digo) (gethash-or-die digo *digos*))
+                   (afk-digo instance)
+                   (and (/= 0 afk-digo) (gethash-or-die afk-digo *digos*))))
+           (return (values instance unknowns))))
 
 (defun fetch-costume (cid cookie-jar)
   (json-costume (http-get-costume cid cookie-jar)))
@@ -158,8 +164,9 @@ web services."
                      ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
              (remappedp (ecase (read-byte stream) (0 nil) (1 t)))
              (data (read-stream-content-into-byte-vector stream)))
-        (make-instance 'standard-portrait :portrait-type type :pid pid
-                                          :remappedp remappedp :data data)))))
+        (values (make-instance 'standard-portrait :portrait-type type :pid pid
+                                                  :remappedp remappedp)
+                data)))))
 
 ;; Load specitag
 
@@ -175,8 +182,8 @@ web services."
         (error "HTTP request unsuccessful (~D): ~A" status reason))
       (let* ((data (pngload:load-stream stream :flatten t))
              (remappedp (ecase (truncate sid 10000000) (50 nil) (59 t))))
-        (make-instance 'standard-specitag :index sid :data (pngload:data data)
-                                          :remappedp remappedp)))))
+        (values (make-instance 'standard-specitag :sid sid :remappedp remappedp)
+                data)))))
 
 ;; Load image
 
@@ -236,7 +243,6 @@ web services."
 
 (defun json-furre (json)
   (loop with furre = (make-instance 'standard-furre)
-        with costume = (make-instance 'standard-costume)
         for (keyword . value) in json
         for furre-entry = (assoc keyword *json-furre-keywords*)
         for costume-entry = (assoc keyword *json-costume-keywords*)
@@ -255,14 +261,10 @@ web services."
         else
           if (and costume-entry
                   (not (member keyword *json-costume-ignored-keywords*)))
-            do (destructuring-bind (keyword accessor . maybe-fn) costume-entry
-                 (declare (ignore keyword))
-                 (let* ((filter (or (car maybe-fn) #'identity))
-                        (setter (fdefinition (list 'setf accessor))))
-                   (funcall setter (funcall filter value) costume)))
-        finally (push costume (costumes furre))
-                (setf (furre costume) furre)
-                (return (values furre unknowns))))
+            collect (cons keyword value) into costume-entries
+        finally (let ((costume (json-costume costume-entries furre)))
+                  (push costume (costumes furre))
+                  (return (values furre unknowns)))))
 
 (defun fetch-furre (sname cookie-jar)
   "Fetches the furre with the provided shortname from the Furcadia web services,
@@ -274,12 +276,10 @@ using the provided cookie jar."
 (defvar *url-fured-save*
   "https://cms.furcadia.com/fured/saveCharacter.php")
 
-;;; TODO check what happens if tokenCostume = 0 and/or tokenRequest = false
-
 (defparameter *save-furre-costume-keywords*
   `((:acolr afk-color-code)
     (:adesc afk-description)
-    (:adigo afk-digo)
+    (:adigo afk-digo ,(lambda (x) (if x (index x) 0))) ;; TODO index -> did
     (:amaxtime afk-max-time)
     (:aport afk-portrait)
     (:aresp auto-response)
@@ -288,10 +288,10 @@ using the provided cookie jar."
     (:awing afk-wings)
     (:colr color-code)
     (:desc description)
-    (:digo digo)
+    (:digo digo ,(lambda (x) (if x (index x) 0))) ;; TODO index -> did
     (:doresp auto-response-p ,(lambda (x) (if x 1 0)))
     (:port portrait)
-    (:tag specitag)
+    (:tag specitag ,(lambda (x) (typecase x (specitag (sid x)) (t x))))
     (:wing wings)))
 
 (defun furre-save-params (furre)

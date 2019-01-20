@@ -32,7 +32,7 @@
                 :initform "w###############")
    (%digo :accessor digo
           :initarg :digo
-          :initform 0)
+          :initform 0) ;; TODO fix those
    (%specitag :accessor specitag
               :initarg :specitag
               :initform 0)
