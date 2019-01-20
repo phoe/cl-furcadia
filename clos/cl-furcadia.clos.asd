@@ -22,5 +22,6 @@
                (:file "standard-portrait")
                (:file "standard-date")
                (:file "standard-image")
+               (:file "standard-specitag")
                (:file "standard-news")
                (:file "standard-post")))

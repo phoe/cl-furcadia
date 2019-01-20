@@ -201,9 +201,6 @@ web services."
 
 ;;; Fetch furre
 
-(defparameter *json-furre-ignored-keywords*
-  '(:snam :state))
-
 (defvar *url-fured-load*
   "https://cms.furcadia.com/fured/loadCharacter.php")
 
@@ -220,14 +217,21 @@ web services."
                             (caddr x)))
           forms))
 
+(defun parse-specitag-forms (forms)
+  (mapcar (lambda (x) (list (parse-integer (symbol-name (car x)))
+                            (cdr x)))
+          forms))
+
+(defparameter *json-furre-ignored-keywords*
+  '(:snam :state :specitags))
+
 (defparameter *json-furre-keywords*
   `((:name name ,(lambda (x) (substitute #\Space #\| x)))
     (:uid uid parse-integer)
     (:digos digos)
     (:lifers lifers)
     (:ports portraits)
-    (:specitags specitags)
-    (:specitag-remap specitag-remap)
+    (:specitag-remap specitags parse-specitag-forms)
     (:costumes costumes parse-costume-forms)))
 
 (defun json-furre (json)
@@ -298,19 +302,22 @@ and cookie jar. Returns the Furcadia login URI, or NIL if the save was
 unsuccessful."
   (values (http-save-furre furre account cookie-jar)))
 
-;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
-(defun fetch-everything (cookie-jar)
-  (multiple-value-bind (account snames last-logins) (fetch-account cookie-jar)
-    (prog1 account
-      (let ((furres (mapcar (rcurry #'fetch-furre cookie-jar) snames)))
-        (setf (furres account) furres)
-        (loop for furre in furres
-              for last-login in last-logins
-              do (setf (last-login furre) last-login)
-                 (loop for costume-list on (costumes furre)
-                       for costume = (car costume-list)
-                       if (listp costume)
-                         do (let ((json (http-get-costume (second costume)
-                                                          cookie-jar)))
-                              (setf (car costume-list)
-                                    (json-costume json furre)))))))))
+;;; TODO likely doesn't work anymore
+;; ;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
+;; (defun fetch-everything (cookie-jar)
+;;   (multiple-value-bind (account snames last-logins) (fetch-account cookie-jar)
+;;     (prog1 account
+;;       (let ((furres (mapcar (rcurry #'fetch-furre cookie-jar) snames)))
+;;         (setf (furres account) furres)
+;;         (loop for furre in furres
+;;               for last-login in last-logins
+;;               do (setf (last-login furre) last-login)
+;;                  (loop for costume-list on (costumes furre)
+;;                        for costume = (car costume-list)
+;;                        if (listp costume)
+;;                          do (let ((json (http-get-costume (second costume)
+;;                                                           cookie-jar)))
+;;                               (setf (car costume-list)
+;;                                     (json-costume json furre)))))))))
+
+;;; TODO check what happens if tokenCostume = 0 and/or tokenRequest = false

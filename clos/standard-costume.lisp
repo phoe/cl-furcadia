@@ -8,7 +8,7 @@
 (defclass standard-costume (costume)
   ((%cid :accessor cid
          :initarg :cid
-         :initform 0)
+         :initform -1)
    (%name :accessor name
           :initarg :name
           :initform "Default Appearance")

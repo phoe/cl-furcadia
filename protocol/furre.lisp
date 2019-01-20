@@ -55,14 +55,14 @@ the furre and is otherwise immutable."
   "Returns the list of specitags owned by the furre."
   (:function (setf specitags) ((new-value list) (furre furre)) list)
   "Sets the list of specitags owned by the furre."
-  (:function specitag-remap ((furre furre)) boolean)
-  "Returns if the specitag should remap."
-  (:function (setf specitag-remap) ((new-value boolean) (furre furre)) boolean)
-  "Sets if the specitag should remap."
   (:function costumes ((furre furre)) list)
   "Returns a list of all costumes available on the furre."
   (:function (setf costumes) ((new-value list) (furre furre)) list)
   "Sets a list of all costumes available on the furre."
+  (:function active-costume ((furre furre)) t)
+  "Returns the costume active for the furre."
+  (:function (setf active-costume) (new-value (furre furre)) t)
+  "Sets the costume active for the furre."
   (:function account ((furre furre)) (or null account))
   "Returns the account the furre belongs to."
   (:function (setf account)

@@ -30,13 +30,11 @@
    (%specitags :accessor specitags
                :initarg :specitags
                :initform '())
-   ;; TODO remove the below slot, it's useless at this stage of processing
-   (%specitag-remap :accessor specitag-remap
-                    :initarg :specitag-remap
-                    :initform nil)
    (%costumes :accessor costumes
               :initarg :costumes
               :initform '())
+   (%active-costume :writer (setf active-costume)
+                    :initform nil)
    (%account :accessor account
              :initarg :account
              :initform nil)))
@@ -46,3 +44,8 @@
 
 (define-readable-print (standard-furre stream :identity nil)
   (format stream "~S" (name standard-furre)))
+
+(defmethod active-costume ((furre standard-furre))
+  (or (slot-value furre '%active-costume)
+      (find -1 (costumes furre) :key #'cid)
+      (error "The furre has no costumes.")))
