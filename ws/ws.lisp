@@ -116,7 +116,7 @@ web services."
     (:adigo afk-digo ,(lambda (x) (if (stringp x) (parse-integer x) x)))
     (:awhsp afk-whisper)
     (:aport afk-portrait parse-integer)
-    (:wing wings)
+    (:wing wings ,(lambda (x) (nth x *wings*)))
     (:awing afk-wings)
     (:adesc afk-description)
     (:acolr afk-color-code)))
@@ -264,6 +264,7 @@ web services."
             collect (cons keyword value) into costume-entries
         finally (let ((costume (json-costume costume-entries furre)))
                   (push costume (costumes furre))
+                  (setf (active-costume furre) costume)
                   (return (values furre unknowns)))))
 
 (defun fetch-furre (sname cookie-jar)
@@ -292,7 +293,7 @@ using the provided cookie jar."
     (:doresp auto-response-p ,(lambda (x) (if x 1 0)))
     (:port portrait)
     (:tag specitag ,(lambda (x) (typecase x (specitag (sid x)) (t x))))
-    (:wing wings)))
+    (:wing wings ,(lambda (x) (position x *wings*)))))
 
 (defun furre-save-params (furre)
   (let* ((costume (active-costume furre))

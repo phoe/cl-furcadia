@@ -33,8 +33,9 @@
    (%costumes :accessor costumes
               :initarg :costumes
               :initform '())
-   (%active-costume :writer (setf active-costume)
-                    :initform nil)
+   (%active-costume :accessor active-costume
+                    :initarg :active-costume
+                    :initform -1)
    (%account :accessor account
              :initarg :account
              :initform nil)))
@@ -44,8 +45,3 @@
 
 (define-readable-print (standard-furre stream :identity nil)
   (format stream "~S" (name standard-furre)))
-
-(defmethod active-costume ((furre standard-furre))
-  (or (slot-value furre '%active-costume)
-      (find -1 (costumes furre) :key #'cid)
-      (error "The furre has no costumes.")))

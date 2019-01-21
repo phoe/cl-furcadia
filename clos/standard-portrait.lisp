@@ -5,7 +5,7 @@
 
 (in-package #:cl-furcadia/clos)
 
-(defclass standard-portrait (costume)
+(defclass standard-portrait (portrait)
   ((%pid :accessor pid
          :initarg :pid
          :initform 0)
