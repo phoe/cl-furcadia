@@ -10,6 +10,8 @@
   :depends-on (#:alexandria
                #:phoe-toolbox
                #:local-time
+               #:pngload
+               #:zpng
                #:lorem-ipsum ;; TODO remove when in production
                #:cl-furcadia.base
                #:cl-furcadia.protocol)

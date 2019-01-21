@@ -28,7 +28,7 @@
     (format stream " (~A)" (name furre))))
 
 (defmethod image-data ((portrait standard-portrait) dl-path)
-  (let* ((pid-string (princ-to-string (cl-furcadia:pid portrait)))
+  (let* ((pid-string (princ-to-string (pid portrait)))
          (portraits-dir (merge-pathnames "portraits/" dl-path))
          (sname (shortname (furre portrait)))
          (portrait-dir (merge-pathnames (uiop:strcat sname "/") portraits-dir))
@@ -40,7 +40,7 @@
 (defmethod (setf image-data)
     ((data vector) (portrait standard-portrait) dl-path)
   (check-type data (vector (unsigned-byte 8)))
-  (let* ((pid-string (princ-to-string (cl-furcadia:pid portrait)))
+  (let* ((pid-string (princ-to-string (pid portrait)))
          (portraits-dir (merge-pathnames "portraits/" dl-path))
          (sname (shortname (furre portrait)))
          (portrait-dir (merge-pathnames (uiop:strcat sname "/") portraits-dir))
