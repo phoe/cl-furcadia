@@ -40,7 +40,7 @@
   "Hash-table containing digo data. The keys are unsigned-bytes and the values
 are instances of CL-FURCADIA/CLOS:DIGO class.")
 
-(defvar *gradients*
+(defparameter *gradients*
   (read-data-file :cl-furcadia.constants "data/gradients.lisp")
   "Hash-table containing gradient data. The keys are in form (SYMBOL STRING),
 where SYMBOL is taken from *COLOR-TYPES* and STRING is a valid color name.")
