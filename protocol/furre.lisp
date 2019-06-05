@@ -20,7 +20,7 @@ Each furre downloaded from the Furcadia WS has a so-called \"Last Appearance\" ~
 costume embedded in its data. This is represented by the fact that the ~
 protocol class FURRE is a subclass of protocol class COSTUME."
      :tags (:cl-furcadia :furre)
-     :dependencies (named costume)
+     :dependencies (named)
      :export t)
   (:class furre (named) ())
   "A furre object. Each class participating in this protocol must subclass ~
@@ -44,23 +44,25 @@ the furre and is otherwise immutable."
   (:function (setf lifers) ((new-value list) (furre furre)) list)
   "Sets the list of digos owned by the furre for life." ;; TODO return DIGOs
   (:function portraits ((furre furre)) list)
-  "Returns the list of portraits owned by the furre." ;; TODO portrait protocol
+  "Returns the list of portraits owned by the furre."
   (:function (setf portraits) ((new-value list) (furre furre)) list)
-  "Sets the list of portraits owned by the furre." ;; TODO portrait protocol
+  "Sets the list of portraits owned by the furre."
+  (:function images ((furre furre)) list)
+  "Returns the list of images owned by the furre."
+  (:function (setf images) ((new-value list) (furre furre)) list)
+  "Sets the list of images owned by the furre."
   (:function specitags ((furre furre)) list)
-  "Returns the list of specitags owned by the furre." ;; TODO specitag protocol
+  "Returns the list of specitags owned by the furre."
   (:function (setf specitags) ((new-value list) (furre furre)) list)
-  "Sets the list of specitags owned by the furre." ;; TODO specitag protocol
-  (:function specitag-remap ((furre furre)) boolean)
-  "Returns if the specitag should remap."
-  (:function (setf specitag-remap) ((new-value boolean) (furre furre)) boolean)
-  "Sets if the specitag should remap."
+  "Sets the list of specitags owned by the furre."
   (:function costumes ((furre furre)) list)
   "Returns a list of all costumes available on the furre."
-  ;; TODO costume protocol
   (:function (setf costumes) ((new-value list) (furre furre)) list)
   "Sets a list of all costumes available on the furre."
-  ;; TODO costume protocol
+  (:function active-costume ((furre furre)) t)
+  "Returns the costume active for the furre."
+  (:function (setf active-costume) (new-value (furre furre)) t)
+  "Sets the costume active for the furre."
   (:function account ((furre furre)) (or null account))
   "Returns the account the furre belongs to."
   (:function (setf account)

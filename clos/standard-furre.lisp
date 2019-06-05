@@ -21,18 +21,21 @@
    (%lifers :accessor lifers
             :initarg :lifers
             :initform '())
+   (%images :accessor images
+            :initarg :images
+            :initform '())
    (%portraits :accessor portraits
                :initarg :portraits
                :initform '())
    (%specitags :accessor specitags
                :initarg :specitags
                :initform '())
-   (%specitag-remap :accessor specitag-remap
-                    :initarg :specitag-remap
-                    :initform nil)
    (%costumes :accessor costumes
               :initarg :costumes
               :initform '())
+   (%active-costume :accessor active-costume
+                    :initarg :active-costume
+                    :initform -1)
    (%account :accessor account
              :initarg :account
              :initform nil)))

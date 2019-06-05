@@ -20,4 +20,5 @@
    #:standard-news
    #:standard-specitag
    #:standard-date #:now
+   #:standard-image
    #:standard-post))

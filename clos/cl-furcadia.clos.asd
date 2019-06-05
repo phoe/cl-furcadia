@@ -10,6 +10,8 @@
   :depends-on (#:alexandria
                #:phoe-toolbox
                #:local-time
+               #:pngload
+               #:zpng
                #:lorem-ipsum ;; TODO remove when in production
                #:cl-furcadia.base
                #:cl-furcadia.protocol)
@@ -21,5 +23,7 @@
                (:file "standard-account")
                (:file "standard-portrait")
                (:file "standard-date")
+               (:file "standard-image")
+               (:file "standard-specitag")
                (:file "standard-news")
                (:file "standard-post")))

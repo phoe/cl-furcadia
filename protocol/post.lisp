@@ -11,14 +11,15 @@ posts within the MMOSG Furcadia. Each post has an author being the furre who ~
 authored and sent that post, a date marking when the post was authored, and ~
 post contents which are a single line of text." ;; TODO text limit in Furc
      ;; TODO max 4080 chars per whisper
-     :tags (:cl-furcadia :account)
+     :tags (:cl-furcadia :post)
      :export t)
   (:class post () ())
   "A post object. Each class participating in this protocol must subclass this ~
 protocol class."
-  (:function author-shortname ((post post)) string)
+  (:function shortname ((post post)) (or null string))
   "Returns the shortname of the post's author."
-  (:function (setf author-shortname) ((new-value string) (post post)) string)
+  (:function (setf shortname)
+             ((new-value (or null string)) (post post)) (or null string))
   "Sets the shortname of the post's author."
   (:function date ((post post)) date)
   "Returns the date of the post."

@@ -52,8 +52,7 @@ cookie jar with associated login cookies."
   "https://cms.furcadia.com/fured/")
 
 (defun http-get-account (cookie-jar)
-  (let* ((page (drakma:http-request *url-fured-page*
-                                    :cookie-jar cookie-jar))
+  (let* ((page (drakma:http-request *url-fured-page* :cookie-jar cookie-jar))
          (begin (search "account.JSON=" page))
          (end (search (string #\Newline) page :start2 begin))
          (subseq (subseq page (+ begin 13) (1- end)))
@@ -103,7 +102,7 @@ web services."
     (:ord ordinal parse-integer)
     (:desc description)
     (:colr color-code)
-    (:digo digo)
+    (:digo digo ,(lambda (x) (if (stringp x) (parse-integer x) x)))
     (:port portrait parse-integer)
     (:scal scale parse-integer)
     ;; (:glom glom) ;; TODO figure out what it is
@@ -114,10 +113,10 @@ web services."
     (:atime afk-time parse-integer)
     (:amaxtime afk-max-time parse-integer)
     (:doresp auto-response-p ,(lambda (x) (/= (parse-integer x) 0)))
-    (:adigo afk-digo)
+    (:adigo afk-digo ,(lambda (x) (if (stringp x) (parse-integer x) x)))
     (:awhsp afk-whisper)
     (:aport afk-portrait parse-integer)
-    (:wing wings)
+    (:wing wings ,(lambda (x) (nth x *wings*)))
     (:awing afk-wings)
     (:adesc afk-description)
     (:acolr afk-color-code)))
@@ -135,8 +134,15 @@ web services."
             (let* ((filter (or (car maybe-fn) #'identity))
                    (setter (fdefinition (list 'setf accessor))))
               (funcall setter (funcall filter value) instance)))
-        finally (setf (furre instance) furre)
-                (return (values instance unknowns))))
+        finally
+           (setf (furre instance) furre)
+           (let ((digo (digo instance))
+                 (afk-digo (afk-digo instance)))
+             (setf (digo instance)
+                   (and (/= 0 digo) (gethash-or-die digo *digos*))
+                   (afk-digo instance)
+                   (and (/= 0 afk-digo) (gethash-or-die afk-digo *digos*))))
+           (return (values instance unknowns))))
 
 (defun fetch-costume (cid cookie-jar)
   (json-costume (http-get-costume cid cookie-jar)))
@@ -158,8 +164,9 @@ web services."
                      ((0 1) :8-bit) (2 :24-bit) (3 :fox)))
              (remappedp (ecase (read-byte stream) (0 nil) (1 t)))
              (data (read-stream-content-into-byte-vector stream)))
-        (make-instance 'standard-portrait :portrait-type type :pid pid
-                                          :remappedp remappedp :data data)))))
+        (values (make-instance 'standard-portrait :portrait-type type :pid pid
+                                                  :remappedp remappedp)
+                data)))))
 
 ;; Load specitag
 
@@ -175,13 +182,31 @@ web services."
         (error "HTTP request unsuccessful (~D): ~A" status reason))
       (let* ((data (pngload:load-stream stream :flatten t))
              (remappedp (ecase (truncate sid 10000000) (50 nil) (59 t))))
-        (make-instance 'standard-specitag :index sid :data (pngload:data data)
-                                          :remappedp remappedp)))))
+        (values (make-instance 'standard-specitag :sid sid :remappedp remappedp)
+                data)))))
+
+;; Load image
+
+(defvar *url-raptor-systems-images*
+  "https://raptor.systems/furcadia/images/~A")
+
+(defun fetch-image-list (shortname)
+  (let ((url (format nil *url-raptor-systems-images* shortname))
+        (image-keys '(:id :timestamp :url :eye-level :sfw)))
+    (multiple-value-bind (stream status headers uri stream2 closedp reason)
+        (drakma:http-request url :want-stream t)
+      (declare (ignore headers uri stream2 closedp))
+      (cond
+        ((= status 404) '())
+        ((/= 2 (truncate status 100))
+         (error "HTTP request unsuccessful (~D): ~A" status reason))
+        (t (let* ((json (cl-json:decode-json stream)))
+             (loop for entry in json
+                   do (assert (set-equal image-keys (mapcar #'car entry)))
+                   collect (apply #'make-instance 'standard-image
+                                  (alist-plist entry)))))))))
 
 ;;; Fetch furre
-
-(defparameter *json-furre-ignored-keywords*
-  '(:snam :state))
 
 (defvar *url-fured-load*
   "https://cms.furcadia.com/fured/loadCharacter.php")
@@ -199,19 +224,25 @@ web services."
                             (caddr x)))
           forms))
 
+(defun parse-specitag-forms (forms)
+  (mapcar (lambda (x) (list (parse-integer (symbol-name (car x)))
+                            (cdr x)))
+          forms))
+
+(defparameter *json-furre-ignored-keywords*
+  '(:snam :state :specitags))
+
 (defparameter *json-furre-keywords*
   `((:name name ,(lambda (x) (substitute #\Space #\| x)))
     (:uid uid parse-integer)
     (:digos digos)
     (:lifers lifers)
     (:ports portraits)
-    (:specitags specitags)
-    (:specitag-remap specitag-remap)
+    (:specitag-remap specitags parse-specitag-forms)
     (:costumes costumes parse-costume-forms)))
 
 (defun json-furre (json)
   (loop with furre = (make-instance 'standard-furre)
-        with costume = (make-instance 'standard-costume)
         for (keyword . value) in json
         for furre-entry = (assoc keyword *json-furre-keywords*)
         for costume-entry = (assoc keyword *json-costume-keywords*)
@@ -230,14 +261,11 @@ web services."
         else
           if (and costume-entry
                   (not (member keyword *json-costume-ignored-keywords*)))
-            do (destructuring-bind (keyword accessor . maybe-fn) costume-entry
-                 (declare (ignore keyword))
-                 (let* ((filter (or (car maybe-fn) #'identity))
-                        (setter (fdefinition (list 'setf accessor))))
-                   (funcall setter (funcall filter value) costume)))
-        finally (push costume (costumes furre))
-                (setf (furre costume) furre)
-                (return (values furre unknowns))))
+            collect (cons keyword value) into costume-entries
+        finally (let ((costume (json-costume costume-entries furre)))
+                  (push costume (costumes furre))
+                  (setf (active-costume furre) costume)
+                  (return (values furre unknowns)))))
 
 (defun fetch-furre (sname cookie-jar)
   "Fetches the furre with the provided shortname from the Furcadia web services,
@@ -249,47 +277,56 @@ using the provided cookie jar."
 (defvar *url-fured-save*
   "https://cms.furcadia.com/fured/saveCharacter.php")
 
-(defun furre-json (furre account)
-  (let* ((session (session account))
-         (furre-data
-           (loop for (keyword fn) in *json-furre-keywords*
-                 for keystring = (string-downcase (princ-to-string keyword))
-                 for value = (princ-to-string (or (funcall fn furre) ""))
-                 unless (string= value "")
-                   collect (cons keystring value))))
-    (nconc furre-data (list (cons "tokenRequest" "true")
-                            (cons "tokenCostume" "-1")
-                            (cons session "1")))))
+(defparameter *save-furre-costume-keywords*
+  `((:acolr afk-color-code)
+    (:adesc afk-description)
+    (:adigo afk-digo ,(lambda (x) (if x (index x) 0))) ;; TODO index -> did
+    (:amaxtime afk-max-time)
+    (:aport afk-portrait)
+    (:aresp auto-response)
+    (:atime afk-time)
+    (:awhsp afk-whisper)
+    (:awing afk-wings)
+    (:colr color-code)
+    (:desc description)
+    (:digo digo ,(lambda (x) (if x (index x) 0))) ;; TODO index -> did
+    (:doresp auto-response-p ,(lambda (x) (if x 1 0)))
+    (:port portrait)
+    (:tag specitag ,(lambda (x) (typecase x (specitag (sid x)) (t x))))
+    (:wing wings ,(lambda (x) (position x *wings*)))))
 
-(defun http-save-furre (furre account cookie-jar)
-  (let* ((json (furre-json furre account))
+(defun furre-save-params (furre)
+  (let* ((costume (active-costume furre))
+         (cid (cid costume))
+         (session (session (account furre))))
+    (loop for (keyword function . rest) in *save-furre-costume-keywords*
+          for keystring = (string-downcase (princ-to-string keyword))
+          for value = (funcall function costume)
+          for processed-value = (if rest (funcall (car rest) value) value)
+          collect (cons keystring (princ-to-string processed-value)) into result
+          finally (return (list* (cons "uid" (princ-to-string (uid furre)))
+                                 (cons "tokenCostume" (princ-to-string cid))
+                                 (cons "tokenRequest" "true")
+                                 (cons session "1")
+                                 result)))))
+
+(defun http-save-furre (furre)
+  (let* ((cookie-jar (cookie-jar-of (account furre)))
+         (params (furre-save-params furre))
          (response (drakma:http-request *url-fured-save*
-                                        :method :post
-                                        :parameters json
-                                        :cookie-jar cookie-jar))
-         (result (decode-json (make-string-input-stream response))))
-    (values (assoc-value result :login--url)
-            result)))
+                                        :method :post :parameters params
+                                        :redirect nil :cookie-jar cookie-jar)))
+    (if response
+        (let* ((result (decode-json (make-string-input-stream response)))
+               (login-uri (assoc-value result :login--url)))
+          (if login-uri
+              (values login-uri result)
+              (error "Saving character failed: ~A"
+                     (assoc-value result :reason))))
+        (error "The session expired. Resynchronization is needed."))))
 
-(defun save-furre (furre account cookie-jar)
+(defun save-furre (furre)
   "Saves the provided furre to Furcadia web services, using the provided account
-and cookie jar. Returns the Furcadia login URI, or NIL if the save was
-unsuccessful."
-  (values (http-save-furre furre account cookie-jar)))
-
-;;; SLOW, SERIAL IMPLEMENTATION - FOR REPRESENTATION ONLY
-(defun fetch-everything (cookie-jar)
-  (multiple-value-bind (account snames last-logins) (fetch-account cookie-jar)
-    (prog1 account
-      (let ((furres (mapcar (rcurry #'fetch-furre cookie-jar) snames)))
-        (setf (furres account) furres)
-        (loop for furre in furres
-              for last-login in last-logins
-              do (setf (last-login furre) last-login)
-                 (loop for costume-list on (costumes furre)
-                       for costume = (car costume-list)
-                       if (listp costume)
-                         do (let ((json (http-get-costume (second costume)
-                                                          cookie-jar)))
-                              (setf (car costume-list)
-                                    (json-costume json furre)))))))))
+and cookie jar. Returns the Furcadia login URI, or signals an error if the save
+failed."
+  (values (http-save-furre furre)))

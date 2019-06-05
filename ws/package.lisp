@@ -21,6 +21,7 @@
    #:fetch-costume
    #:fetch-portrait
    #:fetch-specitag
+   #:fetch-image-list
    #:save-furre
    #:ensure-digo
    #:update-digo-data

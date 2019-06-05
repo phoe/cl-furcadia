@@ -94,7 +94,7 @@ codes. CARs are valid as partial input to *LEGACY-REMAPS*.")
   "Gender values possible in a Furcadia color code.")
 
 (defvar *wingable-digos*
-  '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 138 149 159 188 228 234 257)
+  '(1 2 3 4 5 6 7 8 9 10 96 120 121 127 131 132 139 149 159 188 228 234 257)
   "Identifiers for digos which are capable of displaying wings.")
 
 (defvar *gradient-stops*

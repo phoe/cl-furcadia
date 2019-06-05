@@ -8,7 +8,7 @@
 (defclass standard-costume (costume)
   ((%cid :accessor cid
          :initarg :cid
-         :initform 0)
+         :initform -1)
    (%name :accessor name
           :initarg :name
           :initform "Default Appearance")
@@ -32,7 +32,7 @@
                 :initform "w###############")
    (%digo :accessor digo
           :initarg :digo
-          :initform 0)
+          :initform 0) ;; TODO fix those
    (%specitag :accessor specitag
               :initarg :specitag
               :initform 0)
@@ -56,16 +56,16 @@
                  :initform "")
    (%afk-color-code :accessor afk-color-code
                     :initarg :afk-color-code
-                    :initform "w###############")
+                    :initform "")
    (%afk-digo :accessor afk-digo
               :initarg :afk-digo
-              :initform 0)
+              :initform nil)
    (%afk-wings :accessor afk-wings
                :initarg :afk-wings
                :initform 0)
    (%afk-portrait :accessor afk-portrait
                   :initarg :afk-portrait
-                  :initform 0)
+                  :initform nil)
    (%afk-time :accessor afk-time
               :initarg :afk-time
               :initform 0)
@@ -76,4 +76,5 @@
 (define-readable-print (standard-costume stream :identity nil)
   (format stream "~S" (name standard-costume))
   (when-let ((furre (furre standard-costume)))
-    (format stream " (~S)" (name furre))))
+    (format stream " (~A)" (name furre))))
+

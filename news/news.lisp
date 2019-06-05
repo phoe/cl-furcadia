@@ -37,14 +37,13 @@ implementation, such as PMAPCAR from the LPARALLEL package."
             (extremum dates #'string>))))
 
 (defun get-url (url &rest drakma-args)
-  "Retrieves the news from the provided URL and returns it as a string or a
+  "Retrieves the data from the provided URL and returns it as a string or a
 stream."
   (let ((response (apply #'http-request url :external-format-out :utf-8
                          drakma-args)))
     (etypecase response
-      (string response)
-      ((vector (unsigned-byte 8)) (flex:octets-to-string response))
-      (stream response))))
+      ((or stream string) response)
+      ((vector (unsigned-byte 8)) (flex:octets-to-string response)))))
 
 (defun prepare-news (string)
   "Provided a string containing the retrieved news, returns a list of news

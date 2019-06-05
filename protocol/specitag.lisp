@@ -18,13 +18,13 @@ not be remappable. Each custom specitag is assigned to a furre."
   (:class specitag () ())
   "A specitag object. Each class participating in the protocol must subclass ~
 this protocol class."
-  (:function index ((specitag specitag)) unsigned-byte)
+  (:function sid ((specitag specitag)) unsigned-byte)
   "Returns the index number of the specitag. This value should be provided ~
 when instantiating the specitag and is otherwise immutable."
-  (:function data ((specitag specitag)) vector)
-  "Returns the data of the specitag."
-  (:function (setf data) ((new-value vector) (specitag specitag)) vector)
-  "Sets the data of the specitag."
+  (:function image-data ((specitag specitag)) vector)
+  "Returns the image data of the specitag."
+  (:function (setf image-data) ((new-value vector) (specitag specitag)) vector)
+  "Sets the image data of the specitag."
   (:function remappedp ((specitag specitag)) boolean)
   "Returns true if the specitag is remapped, and false otherwise."
   (:function (setf remappedp) ((new-value boolean) (specitag specitag)) boolean)

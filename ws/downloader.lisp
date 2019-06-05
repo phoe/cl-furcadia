@@ -12,8 +12,8 @@
   "https://cms.furcadia.com/fured/fox5/species~D.fox~^?~D")
 
 (defun http-get-digodata ()
-  (let* ((response (get-url *digodata-url* :want-stream t))
-         (parsed (parse-js:parse-js response))
+  (let* ((stream (get-url *digodata-url* :want-stream t))
+         (parsed (parse-js:parse-js stream))
          (vars (cadr parsed))
          (digodata (find "DIGODATA" vars :test #'string= :key #'caaadr)))
     ;; God forgive me for this function call below
@@ -36,8 +36,8 @@ Returns the list of digo indices whose version was updated."
             for name = (sfind entry "n")
             for index = (sfind entry "s")
             for version = (sfind entry "v")
-            for freep = (sfind entry "d")
-            for exclusivep = (sfind entry "x")
+            for freep = (if (sfind entry "d") t nil)
+            for exclusivep = (if (sfind entry "x") t nil)
             for alternate-form = (sfind entry "e")
             for wingablep = (if (find index *wingable-digos*) t nil)
             for digo = (ensure-digo name index)
@@ -49,6 +49,8 @@ Returns the list of digo indices whose version was updated."
                      (exclusivep digo) exclusivep
                      (alternate-form digo) alternate-form
                      (wingablep digo) wingablep)
+            when (alternate-form digo)
+              do (setf (gethash (alternate-form digo) *digos*) digo)
             unless (eql version old-version)
               collect index))))
 

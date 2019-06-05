@@ -18,7 +18,7 @@ an alternate form of a digo."
   (:class digo () ())
   "A digo object. Each class participating in the protocol must subclass this ~
 protocol class."
-  (:function index ((digo digo)) unsigned-byte)
+  (:function index ((digo digo)) unsigned-byte) ;; TODO index -> did
   "Returns the index number of the digo. This value should be provided when ~
 instantiating the digo and is otherwise immutable."
   (:function name ((digo digo)) string)
