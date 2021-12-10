@@ -33,7 +33,7 @@
 
 ;; TODO stop using internal package access when pngload exports that symbol
 (defmethod (setf image-data)
-    ((png pngload::png-object) (specitag standard-specitag) dl-path)
+    ((png pngload::png) (specitag standard-specitag) dl-path)
   (let* ((sid-string (princ-to-string (sid specitag)))
          (specitags-dir (merge-pathnames "specitags/" dl-path))
          (sname (shortname (furre specitag)))

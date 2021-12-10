@@ -46,7 +46,7 @@
 
 ;; TODO stop using internal package access when pngload exports that symbol
 (defmethod (setf image-data)
-    ((png pngload::png-object) (image standard-image) dl-path)
+    ((png pngload::png) (image standard-image) dl-path)
   (let* ((timestamp-string (princ-to-string (timestamp image)))
          (images-dir (merge-pathnames "images/" dl-path))
          (sname (shortname (furre image)))
